@@ -2,82 +2,127 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Новый чек (продажа)</title>
+    <title>Попа чек (продажа)</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 30px; max-width: 720px; }
-        h1 { margin-bottom: 14px; }
-        form > .basket-row, .head-row { display: grid; grid-template-columns: 120px 200px 130px 130px 110px 90px 90px 40px; gap: 9px; }
-        .head-row { font-weight: bold; background: #f7f7f7; padding: 5px 0; }
-        .basket-row { margin-bottom: 7px; }
-        label { font-weight: 600; margin-bottom: 4px; }
-        select, input[type=number], input[type=text] { padding: 3px 5px; min-width: 20px; }
-        .remove-btn { background: #de3232; color: #fff; border: none; padding: 3px 8px; border-radius: 2px; cursor: pointer; }
-        .summary { font-size: 1.1em; margin: 18px 0 9px; font-weight: bold; }
-        .error { color: #b00; margin-bottom: 12px; }
-        button[type=submit] { font-size: 1.1em; padding: 8px 18px; background: #195; color: #fff; border: none; border-radius: 4px; margin-top: 10px; }
-        .note { color: #555; font-size: 0.97em; margin-top: 32px; }
+        body { font-family: Arial, sans-serif; margin: 38px 18px 38px 38px; max-width: 710px; background: #fcfcfd; }
+        h1 { margin-bottom: 16px; }
+        .basket-row { background: #f7fbfc; border:1px solid #def; border-radius: 8px; padding: 16px 14px 10px 14px; margin-bottom: 15px; box-shadow:0 2px 7px #e9eff2; position:relative; }
+        .pos-number { position:absolute; left:-14px; top:12px; color:#888; font-weight:bold; font-size:1.12em; }
+        .fields-grid { display: grid; grid-template-columns: 138px 1fr 1fr; gap: 12px; align-items: end; }
+        .row-label { min-width:117px;font-weight: 500; margin-top:8px; }
+        select, input[type=number], input[type=text] { font-size: 1.03em; padding: 7px 8px; border-radius:4px; border:1px solid #bbc; width:98%; background:#fff; margin-bottom:2px; }
+        .field-group {margin-bottom:7px;}
+        .remove-btn { background: #e54234; color: #fff; border:none; font-size:1.22em; padding:3px 13px; border-radius: 5px; cursor:pointer; margin-left:12px; float:right; }
+        .add-btn { background: #2698ed; color:#fff; font-size:1.07em; border-radius:6px; border:none; padding:10px 19px; margin-top:14px; cursor:pointer; font-weight:600;}
+        .summary { font-size:1.16em; margin:22px 0 10px; font-weight:bold; color:#242e5d; }
+        .sumline { margin-top:2px; }
+        .error { color:#c10404; margin-bottom:13px; }
+        button[type=submit] { font-size:1.12em; padding: 11px 32px; background: #28b027; color: #fff; border: none; border-radius:6px; margin-top: 18px; font-weight:600; }
+        .note { color: #555; font-size: 0.97em; margin-top: 28px;}
         a { color: #296080; }
+        .summary-total { color: #28882a; font-weight:bold; font-size: 1.18em; }
+        .summary-discount, .sumline-discount { color:#d72233; font-weight:700; }
+        .ost-label { font-size:.93em; color:#338; margin-left:6px; }
+        .tara-price { font-size:.98em; color:#2b4; margin-left:0.7em; font-weight:500; } .tara-free { color:#888; }
     </style>
     <script>
+        
     let productOptions = {};
+    let productStock = {};
     let cosmeticOptions = {};
+    let cosmeticStock = {};
     let bottleOptions = {};
-    {% for p in perfumes %}
-      productOptions[{{p.id}}] = {price_ml: {{p.price_per_ml}}, price_bottle: {{p.full_bottle_price}}, bottle_ml: {{p.bottle_volume_ml}}, name: "{{p.brand}} {{p.name}}"};
+    {% for p in perfumes %}productOptions[{{p.id}}] = {price_ml: {{p.price_per_ml}}, price_bottle: {{p.full_bottle_price}}, bottle_ml: {{p.bottle_volume_ml}}, name: "{{p.brand}} {{p.name}}"}; productStock[{{p.id}}] = 999; /* TODO: заменить на фактический остаток */
     {% endfor %}
-    {% for c in cosmetics %}
-      cosmeticOptions[{{c.id}}] = {price: {{c.unit_price}}, name: "{{c.brand}} {{c.name}}"};
+    {% for c in cosmetics %}cosmeticOptions[{{c.id}}] = {price: {{c.unit_price}}, name: "{{c.brand}} {{c.name}}"}; cosmeticStock[{{c.id}}] = {{c.stock}};
     {% endfor %}
-    {% for b in bottles %}
-      bottleOptions[{{b.id}}] = {price: {{b.price}}, volume_ml: {{b.volume_ml}}, name: "{{b.name}}"};
+    {% for b in bottles %}bottleOptions[{{b.id}}] = {price: {{b.price}}, volume_ml: {{b.volume_ml}}, name: "{{b.name}}", is_paid: {{b.is_paid|yesno:'1,0'}}, label: "{{b.name}} {{b.volume_ml}} мл{% if b.is_paid %} ({{b.price}} сом){% else %} (бесплатно){% endif %}"};
     {% endfor %}
-
     function addRow() {
       const container = document.getElementById('basket');
-      let idx = container.children.length;
-      let tr = document.createElement('div');
-      tr.className = 'basket-row';
-      tr.innerHTML = `
-        <select name="item_type" class="itm-type" onchange="onTypeChange(this)">
-          <option value="split">Распив</option>
-          <option value="full">Флакон</option>
-          <option value="cosmetic">Косметика</option>
-        </select>
-        <select name="perfume" class="perfume" onchange="onPerfumeChange(this)">
-          <option value="">---</option>
-          {% for p in perfumes %}<option value="{{p.id}}">{{p.brand}} {{p.name}}</option>{% endfor %}
-        </select>
-        <select name="cosmetic" class="cosmetic" style="display:none;" onchange="onCosmeticChange(this)">
-          <option value="">---</option>
-          {% for c in cosmetics %}<option value="{{c.id}}">{{c.brand}} {{c.name}}</option>{% endfor %}
-        </select>
-        <input name="ml_qty" class="ml_qty" type="number" min="0" step="0.1" placeholder="мл" style="" />
-        <input name="bottle_qty" class="bottle_qty" type="number" min="0" step="1" placeholder="Фл./Шт." style="display:none;" />
-        <select name="bottle_type" class="bottle_type" style="display:none;">
-          <option value="">---</option>
-          {% for b in bottles %}<option value="{{b.id}}">{{b.name}} {{b.volume_ml}} мл{% if b.is_paid %} ({{b.price}} сом){% endif %}</option>{% endfor %}
-        </select>
-        <input name="price" class="price" type="number" min="0" placeholder="Цена" readonly />
-        <input name="item_discount" class="item_discount" type="number" min="0" value="0" placeholder="Скидка" />
-        <button type="button" class="remove-btn" onclick="this.parentNode.remove(); summaryUpdate()">–</button>
+      let idx = container.children.length+1;
+      let d = document.createElement('div');
+      d.className = 'basket-row';
+      d.innerHTML = `
+        <div class='pos-number'>#${idx}</div>
+        <div class='fields-grid'>
+         <div class='field-group'>
+           <label class='row-label'>Тип товара*</label>
+           <select name="item_type" class="itm-type" onchange="onTypeChange(this)">
+             <option value="split">Распив (по мл)</option>
+             <option value="full">Флакон полностью</option>
+             <option value="cosmetic">Косметика</option>
+           </select>
+         </div>
+         <div class='field-group perfume-gr'>
+           <label class='row-label'>Парфюм</label>
+           <select name="perfume" class="perfume" onchange="onPerfumeChange(this)">
+              <option value="">-- Выберите парфюм --</option>
+              {% for p in perfumes %}<option value="{{p.id}}">{{p.brand}} {{p.name}}</option>{% endfor %}
+           </select>
+           <span class='ost-label perfume-ost' style='display:none'>остаток: n/a</span>
+         </div>
+         <div class='field-group cosmetic-gr' style='display:none'>
+           <label class='row-label'>Косметика</label>
+           <select name="cosmetic" class="cosmetic" onchange="onCosmeticChange(this)">
+             <option value="">-- Выберите косметику --</option>
+             {% for c in cosmetics %}<option value="{{c.id}}">{{c.brand}} {{c.name}}</option>{% endfor %}
+           </select>
+           <span class='ost-label cosmetic-ost' style='display:none'>остаток: n/a</span>
+         </div>
+         <div class='field-group ml-group'>
+           <label class='row-label'>Распив, мл</label>
+           <input name="ml_qty" class="ml_qty" type="number" min="0" step="0.1" placeholder="Сколько мл" />
+         </div>
+         <div class='field-group bottle-group' style="display:none">
+           <label class='row-label'>Флаконов/Шт.*</label>
+           <input name="bottle_qty" class="bottle_qty" type="number" min="0" step="1" placeholder="Сколько шт"/>
+         </div>
+         <div class='field-group tara-group' style="display:none">
+           <label class='row-label'>Тара для распива</label>
+           <select name="bottle_type" class="bottle_type" onchange="onTaraChange(this)">
+              <option value="">-- Тип тары --</option>
+              {% for b in bottles %}<option value="{{b.id}}">{{b.name}} {{b.volume_ml}} мл{% if b.is_paid %} ({{b.price}} сом){% else %} (бесплатно){% endif %}</option>{% endfor %}
+           </select>
+           <span class="tara-price" style="display:none;"></span>
+         </div>
+         <div class='field-group'>
+           <label class='row-label'>Цена, сом</label>
+           <input name="price" class="price" type="number" min="0" placeholder="Цена автоматически" readonly />
+         </div>
+         <div class='field-group'>
+           <label class='row-label'>Скидка на товар, сом</label>
+           <input name="item_discount" class="item_discount" type="number" min="0" value="0" placeholder="0" />
+         </div>
+         <div class='field-group'>
+           <button type="button" class="remove-btn" onclick="this.closest('.basket-row').remove(); updatePositionNumbers(); summaryUpdate();" title='Удалить позицию'>–</button>
+         </div>
+        </div>
       `;
-      container.appendChild(tr);
+      container.appendChild(d);
       summaryUpdate();
     }
     function onTypeChange(sel) {
-      let row = sel.parentNode;
+      let row = sel.closest('.basket-row');
       let type = sel.value;
-      row.querySelector('.perfume').style.display = (type !== 'cosmetic') ? '' : 'none';
-      row.querySelector('.cosmetic').style.display = (type === 'cosmetic') ? '' : 'none';
-      row.querySelector('.ml_qty').style.display = (type === 'split') ? '' : 'none';
-      row.querySelector('.bottle_qty').style.display = (type !== 'split') ? '' : 'none';
-      row.querySelector('.bottle_type').style.display = (type === 'split') ? '' : 'none';
+      row.querySelector('.perfume-gr').style.display = (type !== 'cosmetic') ? '' : 'none';
+      row.querySelector('.cosmetic-gr').style.display = (type === 'cosmetic') ? '' : 'none';
+      row.querySelector('.ml-group').style.display = (type === 'split') ? '' : 'none';
+      row.querySelector('.bottle-group').style.display = (type !== 'split') ? '' : 'none';
+      row.querySelector('.tara-group').style.display = (type === 'split') ? '' : 'none';
       summaryUpdate();
     }
     function onPerfumeChange(sel) {
-      let row = sel.parentNode;
+      let row = sel.closest('.basket-row');
       let type = row.querySelector('.itm-type').value;
       let perfumeId = sel.value;
+      let ostSpan = row.querySelector('.perfume-ost');
+      if (perfumeId) {
+        ostSpan.innerText = 'остаток: '+(productStock[perfumeId]||'нет');
+        ostSpan.style.display = '';
+      } else {
+        ostSpan.style.display = 'none';
+      }
       if (perfumeId && type === "split") {
         row.querySelector('.price').value = productOptions[perfumeId]['price_ml'];
       }
@@ -86,9 +131,29 @@
       }
       summaryUpdate();
     }
+    function onTaraChange(sel) {
+      let row = sel.closest('.basket-row');
+      let btlId = sel.value;
+      let lbl = row.querySelector('.tara-price');
+      if (btlId && bottleOptions[btlId]) {
+        if(bottleOptions[btlId].is_paid) lbl.innerText = 'Платная тара: '+bottleOptions[btlId].price+' сом/шт.';
+        else lbl.innerText = 'Бесплатная тара';
+        lbl.style.display = '';
+      } else {
+        lbl.style.display = 'none';
+      }
+      summaryUpdate();
+    }
     function onCosmeticChange(sel) {
-      let row = sel.parentNode;
+      let row = sel.closest('.basket-row');
       let cosmeticId = sel.value;
+      let ostSpan = row.querySelector('.cosmetic-ost');
+      if (cosmeticId) {
+        ostSpan.innerText = 'остаток: '+(cosmeticStock[cosmeticId]||'нет');
+        ostSpan.style.display = '';
+      } else {
+        ostSpan.style.display = 'none';
+      }
       if (cosmeticId) {
         row.querySelector('.price').value = cosmeticOptions[cosmeticId]['price'];
       }
@@ -96,23 +161,36 @@
     }
     function summaryUpdate() {
       let rows = document.querySelectorAll('#basket .basket-row');
-      let total = 0;
-      let discount = 0;
+      let total = 0, discount = 0;
       for (let row of rows) {
         let type = row.querySelector('.itm-type').value;
         let price = +row.querySelector('.price').value || 0;
         let item_discount = +row.querySelector('.item_discount').value || 0;
+        let tara_sum = 0;
+        if(type == 'split') {
+          let tara_id = row.querySelector('.bottle_type').value;
+          let tara_qty = +row.querySelector('.bottle_qty').value || 0;
+          if (tara_id && bottleOptions[tara_id]) {
+            tara_sum = bottleOptions[tara_id].is_paid ? bottleOptions[tara_id].price * tara_qty : 0;
+          }
+        }
         let qty = 1;
         if (type == 'split') qty = +row.querySelector('.ml_qty').value || 0;
         else if (type == 'cosmetic') qty = +row.querySelector('.bottle_qty').value || 0;
         else if (type == 'full') qty = +row.querySelector('.bottle_qty').value || 0;
-        let sum = price * qty - item_discount;
+        let sum = price * qty + tara_sum - item_discount;
         if (sum < 0) sum = 0;
         total += sum;
         discount += item_discount;
+        row.querySelector('.item_discount').style.background = (sum === 0 && (price*qty+tara_sum)>0)?'#ffb5b2':'';
       }
       document.getElementById('summary_total').innerText = total;
       document.getElementById('summary_discount').innerText = discount;
+    }
+    function updatePositionNumbers() {
+      let positions = document.querySelectorAll('.basket-row .pos-number');
+      let i = 1;
+      for (let n of positions) n.innerText = '#' + (i++);
     }
     window.onload = function(){
       addRow();
@@ -120,32 +198,22 @@
     </script>
 </head>
 <body>
-    <h1>Пробить продажу (мульти-позиционный чек)</h1>
+    <h1>Пробить новый чек</h1>
     {% if error %}<div class="error">{{ error }}</div>{% endif %}
     <form method="post">
         {% csrf_token %}
-        <div class="head-row">
-          <span>Тип</span>
-          <span>Парфюм/Косметика</span>
-          <span>Распив (мл)</span>
-          <span>Фл./Шт.</span>
-          <span>Тара</span>
-          <span>Цена</span>
-          <span>Скидка</span>
-          <span></span>
-        </div>
         <div id="basket"></div>
-        <button type="button" onclick="addRow()">+ Добавить позицию</button>
+        <button type="button" class="add-btn" onclick="addRow()">+ Добавить товар/позицию</button>
         <div class="summary">
-          Общая скидка по позициям: <span id="summary_discount">0</span> сом<br>
-          ИТОГО по чеку: <span id="summary_total">0</span> сом
+          <span class="sumline">Сумма по товарам: <span id="summary_total" class="summary-total">0</span> сом</span><br>
+          <span class="sumline">Общая скидка на товары: <span id="summary_discount" class="summary-discount">0</span> сом</span>
         </div>
-        <div>
+        <div class="field-group">
           <label for="sale_discount">Скидка на чек (дополнительно, сом)</label>
           <input type="number" min="0" value="0" name="sale_discount" id="sale_discount"/>
         </div>
-        <button type="submit" style="margin-top:16px;">Пробить чек</button>
+        <button type="submit">Пробить и сохранить чек</button>
     </form>
-    <p class="note">Можно добавить несколько строк. Итог и скидка считаются автоматически. <a href="/sales/today/">К списку продаж</a></p>
+    <p class="note">Можно добавить несколько товаров — чек с множеством позиций. Итоги и скидки считаются автоматически. <a href="/sales/today/">К списку продаж</a></p>
 </body>
 </html>

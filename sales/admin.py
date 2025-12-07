@@ -1,0 +1,27 @@
+from django.contrib import admin
+from .models import Sale, SaleItem, Expense, Income
+
+class SaleItemInline(admin.TabularInline):
+    model = SaleItem
+    extra = 1
+
+@admin.register(Sale)
+class SaleAdmin(admin.ModelAdmin):
+    list_display = ("id", "sale_date", "discount", "total")
+    inlines = [SaleItemInline]
+    date_hierarchy = "sale_date"
+
+@admin.register(SaleItem)
+class SaleItemAdmin(admin.ModelAdmin):
+    list_display = ("id", "sale", "sale_type", "perfume", "cosmetic", "bottles_count", "ml", "bottle_type", "unit_price", "line_total", "discount")
+    list_filter = ("sale_type",)
+
+@admin.register(Expense)
+class ExpenseAdmin(admin.ModelAdmin):
+    list_display = ("id", "date", "description", "amount")
+    search_fields = ("description",)
+
+@admin.register(Income)
+class IncomeAdmin(admin.ModelAdmin):
+    list_display = ("id", "date", "description", "amount")
+    search_fields = ("description",)
