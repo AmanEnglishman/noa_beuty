@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Новый чек (продажа)</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 30px; max-width: 720px; }
+        h1 { margin-bottom: 14px; }
+        form > .basket-row, .head-row { display: grid; grid-template-columns: 120px 200px 130px 130px 110px 90px 90px 40px; gap: 9px; }
+        .head-row { font-weight: bold; background: #f7f7f7; padding: 5px 0; }
+        .basket-row { margin-bottom: 7px; }
+        label { font-weight: 600; margin-bottom: 4px; }
+        select, input[type=number], input[type=text] { padding: 3px 5px; min-width: 20px; }
+        .remove-btn { background: #de3232; color: #fff; border: none; padding: 3px 8px; border-radius: 2px; cursor: pointer; }
+        .summary { font-size: 1.1em; margin: 18px 0 9px; font-weight: bold; }
+        .error { color: #b00; margin-bottom: 12px; }
+        button[type=submit] { font-size: 1.1em; padding: 8px 18px; background: #195; color: #fff; border: none; border-radius: 4px; margin-top: 10px; }
+        .note { color: #555; font-size: 0.97em; margin-top: 32px; }
+        a { color: #296080; }
+    </style>
+    <script>
+    let productOptions = {};
+    let cosmeticOptions = {};
+    let bottleOptions = {};
+    {% for p in perfumes %}
+      productOptions[{{p.id}}] = {price_ml: {{p.price_per_ml}}, price_bottle: {{p.full_bottle_price}}, bottle_ml: {{p.bottle_volume_ml}}, name: "{{p.brand}} {{p.name}}"};
+    {% endfor %}
+    {% for c in cosmetics %}
+      cosmeticOptions[{{c.id}}] = {price: {{c.unit_price}}, name: "{{c.brand}} {{c.name}}"};
+    {% endfor %}
+    {% for b in bottles %}
+      bottleOptions[{{b.id}}] = {price: {{b.price}}, volume_ml: {{b.volume_ml}}, name: "{{b.name}}"};
+    {% endfor %}
+
+    function addRow() {
+      const container = document.getElementById('basket');
+      let idx = container.children.length;
+      let tr = document.createElement('div');
+      tr.className = 'basket-row';
+      tr.innerHTML = `
+        <select name="item_type" class="itm-type" onchange="onTypeChange(this)">
+          <option value="split">Распив</option>
+          <option value="full">Флакон</option>
+          <option value="cosmetic">Косметика</option>
+        </select>
+        <select name="perfume" class="perfume" onchange="onPerfumeChange(this)">
+          <option value="">---</option>
+          {% for p in perfumes %}<option value="{{p.id}}">{{p.brand}} {{p.name}}</option>{% endfor %}
+        </select>
+        <select name="cosmetic" class="cosmetic" style="display:none;" onchange="onCosmeticChange(this)">
+          <option value="">---</option>
+          {% for c in cosmetics %}<option value="{{c.id}}">{{c.brand}} {{c.name}}</option>{% endfor %}
+        </select>
+        <input name="ml_qty" class="ml_qty" type="number" min="0" step="0.1" placeholder="мл" style="" />
+        <input name="bottle_qty" class="bottle_qty" type="number" min="0" step="1" placeholder="Фл./Шт." style="display:none;" />
+        <select name="bottle_type" class="bottle_type" style="display:none;">
+          <option value="">---</option>
+          {% for b in bottles %}<option value="{{b.id}}">{{b.name}} {{b.volume_ml}} мл{% if b.is_paid %} ({{b.price}} сом){% endif %}</option>{% endfor %}
+        </select>
+        <input name="price" class="price" type="number" min="0" placeholder="Цена" readonly />
+        <input name="item_discount" class="item_discount" type="number" min="0" value="0" placeholder="Скидка" />
+        <button type="button" class="remove-btn" onclick="this.parentNode.remove(); summaryUpdate()">–</button>
+      `;
+      container.appendChild(tr);
+      summaryUpdate();
+    }
+    function onTypeChange(sel) {
+      let row = sel.parentNode;
+      let type = sel.value;
+      row.querySelector('.perfume').style.display = (type !== 'cosmetic') ? '' : 'none';
+      row.querySelector('.cosmetic').style.display = (type === 'cosmetic') ? '' : 'none';
+      row.querySelector('.ml_qty').style.display = (type === 'split') ? '' : 'none';
+      row.querySelector('.bottle_qty').style.display = (type !== 'split') ? '' : 'none';
+      row.querySelector('.bottle_type').style.display = (type === 'split') ? '' : 'none';
+      summaryUpdate();
+    }
+    function onPerfumeChange(sel) {
+      let row = sel.parentNode;
+      let type = row.querySelector('.itm-type').value;
+      let perfumeId = sel.value;
+      if (perfumeId && type === "split") {
+        row.querySelector('.price').value = productOptions[perfumeId]['price_ml'];
+      }
+      if (perfumeId && type === "full") {
+        row.querySelector('.price').value = productOptions[perfumeId]['price_bottle'];
+      }
+      summaryUpdate();
+    }
+    function onCosmeticChange(sel) {
+      let row = sel.parentNode;
+      let cosmeticId = sel.value;
+      if (cosmeticId) {
+        row.querySelector('.price').value = cosmeticOptions[cosmeticId]['price'];
+      }
+      summaryUpdate();
+    }
+    function summaryUpdate() {
+      let rows = document.querySelectorAll('#basket .basket-row');
+      let total = 0;
+      let discount = 0;
+      for (let row of rows) {
+        let type = row.querySelector('.itm-type').value;
+        let price = +row.querySelector('.price').value || 0;
+        let item_discount = +row.querySelector('.item_discount').value || 0;
+        let qty = 1;
+        if (type == 'split') qty = +row.querySelector('.ml_qty').value || 0;
+        else if (type == 'cosmetic') qty = +row.querySelector('.bottle_qty').value || 0;
+        else if (type == 'full') qty = +row.querySelector('.bottle_qty').value || 0;
+        let sum = price * qty - item_discount;
+        if (sum < 0) sum = 0;
+        total += sum;
+        discount += item_discount;
+      }
+      document.getElementById('summary_total').innerText = total;
+      document.getElementById('summary_discount').innerText = discount;
+    }
+    window.onload = function(){
+      addRow();
+    }
+    </script>
+</head>
+<body>
+    <h1>Пробить продажу (мульти-позиционный чек)</h1>
+    {% if error %}<div class="error">{{ error }}</div>{% endif %}
+    <form method="post">
+        {% csrf_token %}
+        <div class="head-row">
+          <span>Тип</span>
+          <span>Парфюм/Косметика</span>
+          <span>Распив (мл)</span>
+          <span>Фл./Шт.</span>
+          <span>Тара</span>
+          <span>Цена</span>
+          <span>Скидка</span>
+          <span></span>
+        </div>
+        <div id="basket"></div>
+        <button type="button" onclick="addRow()">+ Добавить позицию</button>
+        <div class="summary">
+          Общая скидка по позициям: <span id="summary_discount">0</span> сом<br>
+          ИТОГО по чеку: <span id="summary_total">0</span> сом
+        </div>
+        <div>
+          <label for="sale_discount">Скидка на чек (дополнительно, сом)</label>
+          <input type="number" min="0" value="0" name="sale_discount" id="sale_discount"/>
+        </div>
+        <button type="submit" style="margin-top:16px;">Пробить чек</button>
+    </form>
+    <p class="note">Можно добавить несколько строк. Итог и скидка считаются автоматически. <a href="/sales/today/">К списку продаж</a></p>
+</body>
+</html>
