@@ -1,61 +1,62 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>Продажи за {{ today }}</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 30px; }
-        h1 { margin-bottom: 20px; }
-        table { border-collapse: collapse; width: 100%; margin-bottom: 32px; }
-        th, td { border: 1px solid #aaa; padding: 8px; text-align: left; }
-        th { background: #f7f7f7; }
-        .discount, .total { font-weight: bold; color: #235; }
-        .sale-block { margin-bottom: 32px; border: 1px solid #ddd; padding: 12px; border-radius: 7px; }
-    </style>
-</head>
-<body>
-    <h1>Продажи за {{ today }}</h1>
+{% extends "base.html" %}
+
+{% block title %}NOA Beauty — продажи за {{ today }}{% endblock %}
+
+{% block page_header %}
+    <h2 class="h4 mb-1">Продажи за {{ today }}</h2>
+    <p class="text-muted mb-0">Список чеков и позиций за текущий день</p>
+{% endblock %}
+
+{% block content %}
     {% if not sales %}
-      <p>Нет продаж за сегодня.</p>
+        <p class="text-muted mb-0">Нет продаж за сегодня.</p>
     {% endif %}
+
     {% for sale in sales %}
-      <div class="sale-block">
-        <h2>Чек №{{ sale.id }} | время: {{ sale.sale_date|date:"H:i" }}</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Тип</th>
-              <th>Продукт</th>
-              <th>Мл./Шт.</th>
-              <th>Тара</th>
-              <th>Скидка</th>
-              <th>Сумма позиции</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for item in sale.items.all %}
-            <tr>
-              <td>{{ item.get_sale_type_display }}</td>
-              <td>{% if item.perfume %}{{ item.perfume }}{% elif item.cosmetic %}{{ item.cosmetic }}{% endif %}</td>
-              <td>
-                {% if item.ml %}{{ item.ml }} мл{% endif %}
-                {% if item.bottles_count %}{{ item.bottles_count }} фл. {% endif %}
-                {% if item.bottle_count %}{{ item.bottle_count }} шт. {% endif %}
-              </td>
-              <td>{% if item.bottle_type %}{{ item.bottle_type }}{% endif %}</td>
-              <td class="discount">{{ item.discount }} сом</td>
-              <td>{{ item.line_total }} сом</td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-        <div>
-          {% if sale.discount %}
-          <span class="discount">Скидка на чек: {{ sale.discount }} сом</span> |
-          {% endif %}
-          <span class="total">Итого по чеку: {{ sale.total }} сом</span>
+        <div class="mb-3 border rounded-3 p-3">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h3 class="h6 mb-0">Чек №{{ sale.id }}</h3>
+                <span class="text-muted small">Время: {{ sale.sale_date|date:"H:i" }}</span>
+            </div>
+            <div class="table-responsive mb-2">
+                <table class="table table-sm table-striped align-middle mb-0">
+                    <thead class="table-light">
+                    <tr>
+                        <th>Тип</th>
+                        <th>Продукт</th>
+                        <th>Мл./шт.</th>
+                        <th>Тара</th>
+                        <th>Скидка</th>
+                        <th>Сумма позиции</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for item in sale.items.all %}
+                        <tr>
+                            <td>{{ item.get_sale_type_display }}</td>
+                            <td>
+                                {% if item.perfume %}{{ item.perfume }}{% elif item.cosmetic %}{{ item.cosmetic }}{% endif %}
+                            </td>
+                            <td>
+                                {% if item.ml %}{{ item.ml }} мл{% endif %}
+                                {% if item.bottles_count %}{{ item.bottles_count }} фл.{% endif %}
+                                {% if item.bottle_count %} {{ item.bottle_count }} шт.{% endif %}
+                            </td>
+                            <td>{% if item.bottle_type %}{{ item.bottle_type }}{% endif %}</td>
+                            <td class="text-danger fw-semibold">{{ item.discount }} сом</td>
+                            <td class="fw-semibold">{{ item.line_total }} сом</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="d-flex justify-content-end gap-3">
+                {% if sale.discount %}
+                    <span class="text-danger small">Скидка на чек: {{ sale.discount }} сом</span>
+                {% endif %}
+                <span class="fw-bold">Итого по чеку: {{ sale.total }} сом</span>
+            </div>
         </div>
-      </div>
     {% endfor %}
-</body>
-</html>
+{% endblock %}
+

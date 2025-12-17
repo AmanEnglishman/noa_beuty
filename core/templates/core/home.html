@@ -1,81 +1,73 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
+{% extends "base.html" %}
 
-    <!-- Bootstrap 5 -->
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-        rel="stylesheet"
-    >
+{% block title %}NOA Beauty — панель управления{% endblock %}
 
-    <style>
-        body {
-            background: #f5f7fc;
-        }
-        .menu-card {
-            transition: .2s;
-            border-radius: 12px;
-        }
-        .menu-card:hover {
-            transform: scale(1.03);
-            box-shadow: 0 4px 14px rgba(0,0,0,0.15);
-        }
-        .icon-circle {
-            width: 60px;
-            height: 60px;
-            background: #eaf0ff;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-right: 20px;
-        }
-        .icon-circle img {
-            width: 35px;
-        }
-        .header-title {
-            background: #2575fc;
-            color: white;
-            padding: 18px;
-            font-size: 22px;
-            font-weight: 600;
-            text-align: center;
-        }
-    </style>
-</head>
+{% block page_header %}
+    <h1 class="h4 mb-1">Панель управления</h1>
+    <p class="text-muted mb-0">Быстрый доступ к основным разделам учёта</p>
+{% endblock %}
 
-<body>
-
-<div class="header-title">
-    Панель управления
-</div>
-
-<div class="container mt-4">
-
-    <!-- Inventory -->
-    <a href="/inventory/" class="text-decoration-none text-dark">
-        <div class="p-3 mb-3 bg-white menu-card d-flex align-items-center shadow-sm">
-            <div class="icon-circle">
-                <img src="/static/icons/inventory.png" alt="">
-            </div>
-            <h5 class="m-0">Inventory</h5>
+{% block content %}
+    <div class="row g-3">
+        <div class="col-md-6">
+            <a href="/inventory/" class="text-decoration-none text-dark">
+                <div class="p-3 mb-1 bg-white menu-card d-flex align-items-center">
+                    <div class="me-3 rounded-circle d-flex align-items-center justify-content-center"
+                         style="width:56px;height:56px;background:#eaf0ff;">
+                        <span class="fw-bold text-primary">SK</span>
+                    </div>
+                    <div>
+                        <h5 class="mb-1">Склад</h5>
+                        <small class="text-muted">Остатки парфюма, тары и косметики</small>
+                    </div>
+                </div>
+            </a>
         </div>
-    </a>
 
-    <!-- Sales -->
-    <a href="/sales/" class="text-decoration-none text-dark">
-        <div class="p-3 mb-3 bg-white menu-card d-flex align-items-center shadow-sm">
-            <div class="icon-circle">
-                <img src="/static/icons/sales.png" alt="">
-            </div>
-            <h5 class="m-0">Sales</h5>
+        <div class="col-md-6">
+            <a href="/sales/new/" class="text-decoration-none text-dark">
+                <div class="p-3 mb-1 bg-white menu-card d-flex align-items-center">
+                    <div class="me-3 rounded-circle d-flex align-items-center justify-content-center"
+                         style="width:56px;height:56px;background:#eaf7e8;">
+                        <span class="fw-bold text-success">ЧК</span>
+                    </div>
+                    <div>
+                        <h5 class="mb-1">Новый чек</h5>
+                        <small class="text-muted">Быстро пробить продажу с распивом и косметикой</small>
+                    </div>
+                </div>
+            </a>
         </div>
-    </a>
 
-</div>
+        <div class="col-md-6">
+            <a href="/sales/today/" class="text-decoration-none text-dark">
+                <div class="p-3 mb-1 bg-white menu-card d-flex align-items-center">
+                    <div class="me-3 rounded-circle d-flex align-items-center justify-content-center"
+                         style="width:56px;height:56px;background:#fff4e5;">
+                        <span class="fw-bold text-warning">ДН</span>
+                    </div>
+                    <div>
+                        <h5 class="mb-1">Продажи за сегодня</h5>
+                        <small class="text-muted">Список всех чеков за текущий день</small>
+                    </div>
+                </div>
+            </a>
+        </div>
 
-</body>
-</html>
+        <div class="col-md-6">
+            <a href="/finance/monthly/" class="text-decoration-none text-dark">
+                <div class="p-3 mb-1 bg-white menu-card d-flex align-items-center">
+                    <div class="me-3 rounded-circle d-flex align-items-center justify-content-center"
+                         style="width:56px;height:56px;background:#f3e8ff;">
+                        <span class="fw-bold text-purple">FIN</span>
+                    </div>
+                    <div>
+                        <h5 class="mb-1">Финансовый отчёт</h5>
+                        <small class="text-muted">Прибыль, расходы и доп. доходы за месяц</small>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+{% endblock %}
+

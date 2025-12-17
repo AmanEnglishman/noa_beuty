@@ -1,10 +1,9 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>Попа чек (продажа)</title>
+{% extends "base.html" %}
+
+{% block title %}NOA Beauty — новый чек{% endblock %}
+
+{% block extra_head %}
     <style>
-        body { font-family: Arial, sans-serif; margin: 38px 18px 38px 38px; max-width: 710px; background: #fcfcfd; }
         h1 { margin-bottom: 16px; }
         .basket-row { background: #f7fbfc; border:1px solid #def; border-radius: 8px; padding: 16px 14px 10px 14px; margin-bottom: 15px; box-shadow:0 2px 7px #e9eff2; position:relative; }
         .pos-number { position:absolute; left:-14px; top:12px; color:#888; font-weight:bold; font-size:1.12em; }
@@ -25,6 +24,9 @@
         .ost-label { font-size:.93em; color:#338; margin-left:6px; }
         .tara-price { font-size:.98em; color:#2b4; margin-left:0.7em; font-weight:500; } .tara-free { color:#888; }
     </style>
+{% endblock %}
+
+{% block extra_js %}
     <script>
         
     let productOptions = {};
@@ -196,8 +198,14 @@
       addRow();
     }
     </script>
-</head>
-<body>
+{% endblock %}
+
+{% block page_header %}
+    <h1 class="h4 mb-1">Пробить новый чек</h1>
+    <p class="text-muted mb-0">Добавьте позиции распива, полных флаконов и косметики</p>
+{% endblock %}
+
+{% block content %}
     <h1>Пробить новый чек</h1>
     {% if error %}<div class="error">{{ error }}</div>{% endif %}
     <form method="post">
@@ -215,5 +223,5 @@
         <button type="submit">Пробить и сохранить чек</button>
     </form>
     <p class="note">Можно добавить несколько товаров — чек с множеством позиций. Итоги и скидки считаются автоматически. <a href="/sales/today/">К списку продаж</a></p>
-</body>
-</html>
+{% endblock %}
+
