@@ -15,10 +15,11 @@ SECRET_KEY = config('SECRET_KEY', default='django-insecure-$6miewn%e4+isgb!8q6m=
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=True, cast=bool)
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1', cast=Csv())
+ALLOWED_HOSTS = ('*',)
 
 # Application definition
 INSTALLED_APPS = [
+    'jazzmin',  # Улучшенная админка Django (должен быть перед django.contrib.admin)
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

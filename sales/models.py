@@ -15,11 +15,13 @@ class Sale(models.Model):
         return f"Sale #{self.pk} — {self.sale_date.date()}"
 
 class SaleItem(models.Model):
+
     SALE_TYPE_CHOICES = [
         ('full', 'Флакон полностью'),
         ('split', 'Распив'),
         ('cosmetic', 'Косметика'),
     ]
+    
     sale = models.ForeignKey(Sale, on_delete=models.CASCADE, related_name="items", verbose_name="Чек")
     sale_type = models.CharField(max_length=10, choices=SALE_TYPE_CHOICES, verbose_name="Тип продажи")
     perfume = models.ForeignKey(Perfume, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Парфюм")

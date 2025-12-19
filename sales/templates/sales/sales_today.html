@@ -40,7 +40,11 @@
                             <td>
                                 {% if item.ml %}{{ item.ml }} мл{% endif %}
                                 {% if item.bottles_count %}{{ item.bottles_count }} фл.{% endif %}
-                                {% if item.bottle_count %} {{ item.bottle_count }} шт.{% endif %}
+                                {% if item.sale_type == 'split' and item.bottle_count %}
+                                    {{ item.bottle_count }} атомайзер(ов)
+                                {% elif item.sale_type == 'cosmetic' and item.bottle_count %}
+                                    {{ item.bottle_count }} шт.
+                                {% endif %}
                             </td>
                             <td>{% if item.bottle_type %}{{ item.bottle_type }}{% endif %}</td>
                             <td class="text-danger fw-semibold">{{ item.discount }} сом</td>
@@ -51,12 +55,12 @@
                 </table>
             </div>
             <div class="d-flex justify-content-end gap-3">
-                {% if sale.discount %}
-                    <span class="text-danger small">Скидка на чек: {{ sale.discount }} сом</span>
-                {% endif %}
+                <a href="{% url 'sale_print' sale.id %}" class="btn btn-sm btn-outline-primary">
+                        🖨 Печать
+                </a>
                 <span class="fw-bold">Итого по чеку: {{ sale.total }} сом</span>
             </div>
+
         </div>
     {% endfor %}
 {% endblock %}
-
