@@ -1,3 +1,20 @@
-asgiref==3.11.0
+# Django и основные зависимости
 Django==6.0
+asgiref==3.11.0
 sqlparse==0.5.4
+
+# Работа с базой данных
+psycopg2-binary==2.9.9  # PostgreSQL драйвер для production
+
+# Фильтрация данных
+django-filter==24.3
+
+# Конфигурация через переменные окружения
+python-decouple==3.8
+
+# Production WSGI сервер
+gunicorn==21.2.0
+
+# Утилиты для установки пакетов (рекомендуется)
+setuptools>=65.5.0
+wheel>=0.38.0
