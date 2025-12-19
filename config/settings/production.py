@@ -8,7 +8,15 @@ from decouple import config, Csv
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
+# ALLOWED_HOSTS - можно переопределить через .env, но по умолчанию используем IP сервера
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='77.95.206.95', cast=Csv())
+
+# CSRF trusted origins - используем значения из base.py или переопределяем через .env
+CSRF_TRUSTED_ORIGINS = config(
+    'CSRF_TRUSTED_ORIGINS',
+    default='http://77.95.206.95,http://77.95.206.95:8000',
+    cast=Csv()
+)
 
 # Database
 # Используем PostgreSQL в production
@@ -28,6 +36,7 @@ DATABASES = {
 }
 
 # Security settings для production
+# По умолчанию отключены (для HTTP), можно включить через .env для HTTPS
 SECURE_SSL_REDIRECT = config('SECURE_SSL_REDIRECT', default=False, cast=bool)
 SESSION_COOKIE_SECURE = config('SESSION_COOKIE_SECURE', default=False, cast=bool)
 CSRF_COOKIE_SECURE = config('CSRF_COOKIE_SECURE', default=False, cast=bool)
@@ -58,7 +67,7 @@ LOGGING = {
     'loggers': {
         'django': {
             'handlers': ['console'],
-            'level': config('DJANGO_LOG_LEVEL', default='INFO'),
+            'level': 'INFO',  # Можно переопределить через DJANGO_LOG_LEVEL в .env
             'propagate': False,
         },
     },
