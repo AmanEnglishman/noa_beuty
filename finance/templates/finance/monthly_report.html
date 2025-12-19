@@ -23,7 +23,13 @@
     </form>
 
     <div class="card shadow-sm p-3 mb-3">
-        <h4 class="h5">Итоги месяца</h4>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 class="h5 mb-0">Итоги месяца</h4>
+            <div>
+                <a href="{% url 'expense_list' %}" class="btn btn-sm btn-outline-danger">Управление расходами</a>
+                <a href="{% url 'income_list' %}" class="btn btn-sm btn-outline-success">Управление доходами</a>
+            </div>
+        </div>
         <p class="mb-1"><strong>Продажи:</strong> {{ total_sales }} сом</p>
         <p class="mb-1"><strong>Доп. доходы:</strong> {{ total_extra_income }} сом</p>
         <p class="mb-1"><strong>Расходы:</strong> {{ total_expenses }} сом</p>

@@ -28,6 +28,7 @@ DATABASES = {
 }
 
 # Security settings для production
+# По умолчанию отключены (для HTTP), можно включить через .env для HTTPS
 SECURE_SSL_REDIRECT = config('SECURE_SSL_REDIRECT', default=False, cast=bool)
 SESSION_COOKIE_SECURE = config('SESSION_COOKIE_SECURE', default=False, cast=bool)
 CSRF_COOKIE_SECURE = config('CSRF_COOKIE_SECURE', default=False, cast=bool)
@@ -58,10 +59,10 @@ LOGGING = {
     'loggers': {
         'django': {
             'handlers': ['console'],
-            'level': config('DJANGO_LOG_LEVEL', default='INFO'),
+            'level': 'INFO',  # Можно переопределить через DJANGO_LOG_LEVEL в .env
             'propagate': False,
         },
     },
 }
 
-CSRF_TRUSTED_ORIGINS = ["http://77.95.206.95:8000",]
+CSRF_TRUSTED_ORIGINS = ["http://77.95.206.95",]

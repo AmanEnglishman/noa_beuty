@@ -65,9 +65,37 @@ def apply_sale_item_to_stocks(
 
     elif sale_type == "split" and perfume:
         perfume_stock = get_or_create_perfume_stock(perfume)
+        
         if ml > 0:
-            perfume_stock.ml_left = max(0.0, perfume_stock.ml_left - float(ml))
-        perfume_stock.save(update_fields=["ml_left", "updated_at"])
+            # Получаем объем одного флакона парфюма
+            bottle_volume_ml = perfume.bottle_volume_ml
+            
+            # Вычисляем необходимое количество мл
+            ml_needed = float(ml)
+            ml_available = perfume_stock.ml_left
+            
+            # Если недостаточно мл в открытых флаконах, открываем полные флаконы
+            if ml_available < ml_needed:
+                ml_deficit = ml_needed - ml_available
+                # Вычисляем сколько полных флаконов нужно открыть
+                bottles_to_open = int((ml_deficit + bottle_volume_ml - 1) // bottle_volume_ml)  # Округление вверх
+                
+                if bottles_to_open > 0:
+                    # Проверяем, есть ли достаточно полных флаконов
+                    if perfume_stock.bottles_left >= bottles_to_open:
+                        # Открываем полные флаконы: уменьшаем bottles_left, увеличиваем ml_left
+                        perfume_stock.bottles_left = max(0, perfume_stock.bottles_left - bottles_to_open)
+                        perfume_stock.ml_left += bottles_to_open * bottle_volume_ml
+                    else:
+                        # Если недостаточно полных флаконов, открываем все что есть
+                        bottles_to_open = perfume_stock.bottles_left
+                        perfume_stock.ml_left += bottles_to_open * bottle_volume_ml
+                        perfume_stock.bottles_left = 0
+            
+            # Теперь списываем необходимое количество мл
+            perfume_stock.ml_left = max(0.0, perfume_stock.ml_left - ml_needed)
+        
+        perfume_stock.save(update_fields=["bottles_left", "ml_left", "updated_at"])
 
         if bottle_type and bottle_count > 0:
             bottle_stock = get_or_create_bottle_stock(bottle_type)

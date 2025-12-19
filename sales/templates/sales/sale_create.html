@@ -81,12 +81,16 @@
            <input name="bottle_qty" class="bottle_qty" type="number" min="0" step="1" placeholder="Сколько шт"/>
          </div>
          <div class='field-group tara-group' style="display:none">
-           <label class='row-label'>Тара для распива</label>
+           <label class='row-label'>Тип атомайзера</label>
            <select name="bottle_type" class="bottle_type" onchange="onTaraChange(this)">
-              <option value="">-- Тип тары --</option>
+              <option value="">-- Тип атомайзера --</option>
               {% for b in bottles %}<option value="{{b.id}}">{{b.name}} {{b.volume_ml}} мл{% if b.is_paid %} ({{b.price}} сом){% else %} (бесплатно){% endif %}</option>{% endfor %}
            </select>
            <span class="tara-price" style="display:none;"></span>
+         </div>
+         <div class='field-group tara-qty-group' style="display:none">
+           <label class='row-label'>Кол-во атомайзеров</label>
+           <input name="atomizer_qty" class="atomizer_qty" type="number" min="0" step="1" placeholder="Сколько шт" value="1"/>
          </div>
          <div class='field-group'>
            <label class='row-label'>Цена, сом</label>
@@ -112,6 +116,7 @@
       row.querySelector('.ml-group').style.display = (type === 'split') ? '' : 'none';
       row.querySelector('.bottle-group').style.display = (type !== 'split') ? '' : 'none';
       row.querySelector('.tara-group').style.display = (type === 'split') ? '' : 'none';
+      row.querySelector('.tara-qty-group').style.display = (type === 'split') ? '' : 'none';
       summaryUpdate();
     }
     function onPerfumeChange(sel) {
@@ -171,9 +176,9 @@
         let tara_sum = 0;
         if(type == 'split') {
           let tara_id = row.querySelector('.bottle_type').value;
-          let tara_qty = +row.querySelector('.bottle_qty').value || 0;
-          if (tara_id && bottleOptions[tara_id]) {
-            tara_sum = bottleOptions[tara_id].is_paid ? bottleOptions[tara_id].price * tara_qty : 0;
+          let atomizer_qty = +row.querySelector('.atomizer_qty').value || 0;
+          if (tara_id && bottleOptions[tara_id] && atomizer_qty > 0) {
+            tara_sum = bottleOptions[tara_id].is_paid ? bottleOptions[tara_id].price * atomizer_qty : 0;
           }
         }
         let qty = 1;

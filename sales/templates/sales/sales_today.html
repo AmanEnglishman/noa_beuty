@@ -40,7 +40,11 @@
                             <td>
                                 {% if item.ml %}{{ item.ml }} мл{% endif %}
                                 {% if item.bottles_count %}{{ item.bottles_count }} фл.{% endif %}
-                                {% if item.bottle_count %} {{ item.bottle_count }} шт.{% endif %}
+                                {% if item.sale_type == 'split' and item.bottle_count %}
+                                    {{ item.bottle_count }} атомайзер(ов)
+                                {% elif item.sale_type == 'cosmetic' and item.bottle_count %}
+                                    {{ item.bottle_count }} шт.
+                                {% endif %}
                             </td>
                             <td>{% if item.bottle_type %}{{ item.bottle_type }}{% endif %}</td>
                             <td class="text-danger fw-semibold">{{ item.discount }} сом</td>
