@@ -48,8 +48,8 @@ def print_sale_receipt(sale_id: int) -> str:
 
     # ---- Заголовок ----
     add("NOA BEAUTY SHOP", font_big)
-    add("г. Бишкек, ул. Молодая 12", font_small)
-    add("+996 555 123 456", font_small)
+    add("г. Бишкек, ул. Юнусалиева 177/2", font_small)
+    add("+996 990 200 856", font_small)
     add(f"Чек № {sale.id}", font_small)
     add(sale.sale_date.strftime("%d.%m.%Y %H:%M"), font_small)
     add("-" * 32)

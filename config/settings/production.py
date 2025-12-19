@@ -8,15 +8,7 @@ from decouple import config, Csv
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=False, cast=bool)
 
-# ALLOWED_HOSTS - можно переопределить через .env, но по умолчанию используем IP сервера
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='77.95.206.95', cast=Csv())
-
-# CSRF trusted origins - используем значения из base.py или переопределяем через .env
-CSRF_TRUSTED_ORIGINS = config(
-    'CSRF_TRUSTED_ORIGINS',
-    default='http://77.95.206.95,http://77.95.206.95:8000',
-    cast=Csv()
-)
+ALLOWED_HOSTS = ("*",)
 
 # Database
 # Используем PostgreSQL в production
@@ -73,3 +65,4 @@ LOGGING = {
     },
 }
 
+CSRF_TRUSTED_ORIGINS = ["http://77.95.206.95",]

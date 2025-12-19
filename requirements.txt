@@ -22,3 +22,10 @@ setuptools==80.9.0
 six==1.17.0
 sqlparse==0.5.4
 viivakoodi==0.8.0
+# Production WSGI сервер
+gunicorn==21.2.0
+# Утилиты для установки пакетов (рекомендуется)
+setuptools>=65.5.0
+wheel>=0.38.0
+django-jazzmin==3.0.1
+pillow==12.0.0
