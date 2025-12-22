@@ -4,7 +4,8 @@ from inventory.models import BottleStock
 
 class Sale(models.Model):
     sale_date = models.DateTimeField(auto_now_add=True, verbose_name="Дата продажи")
-    discount = models.PositiveIntegerField(default=0, help_text="Скидка на чек (сом)", verbose_name="Скидка на чек (сом)")
+    discount_percent = models.PositiveSmallIntegerField(default=0, help_text="Скидка на чек (%)", verbose_name="Скидка на чек (%)")
+
     total = models.PositiveIntegerField(default=0, help_text="Итоговая сумма чека, сом", verbose_name="Итоговая сумма")
 
     class Meta:
@@ -31,7 +32,7 @@ class SaleItem(models.Model):
     bottle_type = models.ForeignKey(BottleType, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Тип тары")
     bottle_count = models.PositiveIntegerField(default=0, help_text="Тара на распив (шт)", verbose_name="Количество тары (шт)")
     unit_price = models.PositiveIntegerField(help_text="Цена за 1 мл или 1 ед.", verbose_name="Цена за ед./мл")
-    discount = models.PositiveIntegerField(default=0, help_text="Скидка на продукт (сом)", verbose_name="Скидка на товар (сом)")
+    discount_percent = models.PositiveSmallIntegerField(default=0, help_text="Скидка на позицию (%)", verbose_name="Скидка (%)")
     line_total = models.PositiveIntegerField(help_text="Сумма позиции, сом", verbose_name="Сумма строки")
 
     class Meta:
@@ -40,11 +41,11 @@ class SaleItem(models.Model):
 
     def __str__(self):
         if self.sale_type == 'full':
-            return f"Full bottle: {self.perfume} x{self.bottles_count}"
+            return f"{self.perfume} x {self.bottles_count}"
         elif self.sale_type == 'split':
-            return f"Split: {self.perfume} {self.ml}ml (bottle: {self.bottle_type})"
+            return f"{self.perfume} x {self.ml} ml"
         else:
-            return f"Cosmetic: {self.cosmetic} x{self.bottle_count}"
+            return f"{self.cosmetic} x {self.bottle_count}"
 
 class Expense(models.Model):
     date = models.DateField(auto_now_add=True, verbose_name="Дата расхода")
@@ -69,3 +70,13 @@ class Income(models.Model):
 
     def __str__(self):
         return f"Доход: {self.description} - {self.amount} сом"
+
+
+
+class PrintQueue(models.Model):
+    sale = models.ForeignKey("Sale", on_delete=models.CASCADE)
+    printed = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Print sale {self.sale_id} | printed={self.printed}"

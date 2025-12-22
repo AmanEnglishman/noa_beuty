@@ -2,11 +2,26 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 from django.db import transaction
 from django.contrib import messages
+from django.views.decorators.csrf import csrf_exempt
 
 from .models import Sale, SaleItem
+from .models import PrintQueue
 from products.models import Perfume, BottleType, CosmeticProduct
 from inventory.services import apply_sale_item_to_stocks
-from .services.receipt_printer import print_sale_receipt
+
+from django.http import FileResponse, Http404
+import os
+
+import requests
+from django.http import JsonResponse
+
+@csrf_exempt
+def enqueue_print(request, sale_id):
+    PrintQueue.objects.create(
+        sale_id=sale_id,
+        printed=False
+    )
+    return JsonResponse({"status": "queued"})
 
 
 # =========================
@@ -44,8 +59,9 @@ def sale_create(request):
     if request.method == "POST":
         try:
             with transaction.atomic():
+
                 items_data = []
-                total = 0
+                items_total = 0
 
                 types = request.POST.getlist("item_type")
                 perfumes_ids = request.POST.getlist("perfume")
@@ -55,10 +71,11 @@ def sale_create(request):
                 bottle_type_ids = request.POST.getlist("bottle_type")
                 atomizer_qties = request.POST.getlist("atomizer_qty")
                 prices = request.POST.getlist("price")
-                item_discounts = request.POST.getlist("item_discount")
+                item_discounts = request.POST.getlist("item_discount")  # %
 
-                # -------- Сбор позиций --------
+                # ===== СБОР ПОЗИЦИЙ =====
                 for i, sale_type in enumerate(types):
+
                     perfume_id = perfumes_ids[i] or None
                     cosmetic_id = cosmetics_ids[i] or None
 
@@ -68,8 +85,9 @@ def sale_create(request):
                     atomizer_count = int(atomizer_qties[i]) if atomizer_qties[i] and sale_type == "split" else 0
 
                     price = int(prices[i]) if prices[i] else 0
-                    discount = int(item_discounts[i]) if item_discounts[i] else 0
+                    discount_percent = int(item_discounts[i]) if item_discounts[i] else 0
 
+                    # ---- QTY ----
                     if sale_type == "split":
                         qty = ml
                     elif sale_type in ("full", "cosmetic"):
@@ -77,17 +95,20 @@ def sale_create(request):
                     else:
                         qty = 1
 
-                    line_total = max(0, price * qty - discount)
-                    total += line_total
-                    
-                    # Добавляем стоимость платной тары к итогу для распива
+                    # ---- BASE TOTAL ----
+                    base_total = price * qty
+
+                    # ---- ITEM DISCOUNT ----
+                    discount_sum = round(base_total * discount_percent / 100)
+                    line_total = max(0, base_total - discount_sum)
+
+                    items_total += line_total
+
+                    # ---- ПЛАТНАЯ ТАРА ----
                     if sale_type == "split" and bottle_type_id and atomizer_count > 0:
-                        try:
-                            bottle_type = BottleType.objects.get(id=bottle_type_id)
-                            if bottle_type.is_paid:
-                                total += bottle_type.price * atomizer_count
-                        except BottleType.DoesNotExist:
-                            pass
+                        bottle_type = BottleType.objects.filter(id=bottle_type_id).first()
+                        if bottle_type and bottle_type.is_paid:
+                            items_total += bottle_type.price * atomizer_count
 
                     items_data.append({
                         "sale_type": sale_type,
@@ -96,21 +117,21 @@ def sale_create(request):
                         "ml": ml,
                         "bottles_count": bottles_count,
                         "bottle_type_id": bottle_type_id,
-                        "atomizer_count": atomizer_count,
+                        "bottle_count": atomizer_count if sale_type == "split" else bottles_count,
                         "unit_price": price,
-                        "discount": discount,
+                        "discount_percent": discount_percent,
                         "line_total": line_total,
                     })
 
-                # -------- Создание чека --------
-                sale_discount = int(request.POST.get("sale_discount", 0))
+                # ===== СОЗДАНИЕ ЧЕКА =====
+                sale_discount_percent = int(request.POST.get("sale_discount", 0))
 
                 sale = Sale.objects.create(
-                    discount=sale_discount,
-                    total=max(0, total - sale_discount),
+                    discount_percent=sale_discount_percent,
+                    total=0,  # временно
                 )
 
-                # -------- Создание позиций --------
+                # ===== СОЗДАНИЕ ПОЗИЦИЙ =====
                 for item in items_data:
                     sale_item = SaleItem.objects.create(
                         sale=sale,
@@ -119,10 +140,10 @@ def sale_create(request):
                         cosmetic_id=item["cosmetic_id"],
                         ml=item["ml"],
                         bottles_count=item["bottles_count"],
-                        bottle_count=item["atomizer_count"] if item["sale_type"] == "split" else item["bottles_count"],
+                        bottle_count=item["bottle_count"],
                         bottle_type_id=item["bottle_type_id"],
                         unit_price=item["unit_price"],
-                        discount=item["discount"],
+                        discount_percent=item["discount_percent"],
                         line_total=item["line_total"],
                     )
 
@@ -135,6 +156,14 @@ def sale_create(request):
                         ml=sale_item.ml,
                         bottle_count=sale_item.bottle_count,
                     )
+
+                # ===== СКИДКА НА ЧЕК =====
+                sale_discount_sum = round(
+                    items_total * sale.discount_percent / 100
+                )
+
+                sale.total = max(0, items_total - sale_discount_sum)
+                sale.save()
 
                 messages.success(request, "Продажа успешно сохранена")
                 return redirect("sales_today")
@@ -154,13 +183,42 @@ def sale_create(request):
     )
 
 
-# =========================
-# Печать чека
-# =========================
-def print_sale(request, sale_id):
-    sale = get_object_or_404(Sale, id=sale_id)
 
-    path = print_sale_receipt(sale.id)
 
-    messages.success(request, f"Чек отправлен на печать ({path})")
-    return redirect("sales_today")
+
+# =================================================
+# PRINT AGENT: взять следующий чек из очереди
+# =================================================
+@csrf_exempt
+def get_next_print(request):
+    item = (
+        PrintQueue.objects
+        .filter(printed=False)
+        .order_by("created_at")
+        .first()
+    )
+
+    if not item:
+        return JsonResponse({"sale_id": None})
+
+    return JsonResponse({"sale_id": item.sale_id})
+
+
+# =================================================
+# PRINT AGENT: отметить чек как напечатанный
+# =================================================
+@csrf_exempt
+def mark_printed(request, sale_id):
+    PrintQueue.objects.filter(
+        sale_id=sale_id,
+        printed=False
+    ).update(printed=True)
+
+    return JsonResponse({"status": "ok"})
+
+from django.http import HttpResponse
+from .services.receipt_printer import render_sale_receipt_png
+
+def receipt_png(request, sale_id):
+    png = render_sale_receipt_png(sale_id)
+    return HttpResponse(png, content_type="image/png")

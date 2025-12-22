@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 
-{% block title %}NOA Beauty — продажи за {{ today }}{% endblock %}
+{% block title %}
+NOA Beauty — продажи за {{ today }}
+{% endblock %}
 
 {% block page_header %}
     <h2 class="h4 mb-1">Продажи за {{ today }}</h2>
@@ -13,54 +15,102 @@
     {% endif %}
 
     {% for sale in sales %}
-        <div class="mb-3 border rounded-3 p-3">
+        <div class="mb-3 border rounded-3 p-3" id="sale-{{ sale.id }}">
             <div class="d-flex justify-content-between align-items-center mb-2">
                 <h3 class="h6 mb-0">Чек №{{ sale.id }}</h3>
-                <span class="text-muted small">Время: {{ sale.sale_date|date:"H:i" }}</span>
+                <span class="text-muted small">
+                    Время: {{ sale.sale_date|date:"H:i" }}
+                </span>
             </div>
+
             <div class="table-responsive mb-2">
                 <table class="table table-sm table-striped align-middle mb-0">
                     <thead class="table-light">
-                    <tr>
-                        <th>Тип</th>
-                        <th>Продукт</th>
-                        <th>Мл./шт.</th>
-                        <th>Тара</th>
-                        <th>Скидка</th>
-                        <th>Сумма позиции</th>
-                    </tr>
+                        <tr>
+                            <th>Тип</th>
+                            <th>Продукт</th>
+                            <th>Мл./шт.</th>
+                            <th>Тара</th>
+                            <th>Скидка</th>
+                            <th>Сумма</th>
+                        </tr>
                     </thead>
                     <tbody>
-                    {% for item in sale.items.all %}
-                        <tr>
-                            <td>{{ item.get_sale_type_display }}</td>
-                            <td>
-                                {% if item.perfume %}{{ item.perfume }}{% elif item.cosmetic %}{{ item.cosmetic }}{% endif %}
-                            </td>
-                            <td>
-                                {% if item.ml %}{{ item.ml }} мл{% endif %}
-                                {% if item.bottles_count %}{{ item.bottles_count }} фл.{% endif %}
-                                {% if item.sale_type == 'split' and item.bottle_count %}
-                                    {{ item.bottle_count }} атомайзер(ов)
-                                {% elif item.sale_type == 'cosmetic' and item.bottle_count %}
-                                    {{ item.bottle_count }} шт.
-                                {% endif %}
-                            </td>
-                            <td>{% if item.bottle_type %}{{ item.bottle_type }}{% endif %}</td>
-                            <td class="text-danger fw-semibold">{{ item.discount }} сом</td>
-                            <td class="fw-semibold">{{ item.line_total }} сом</td>
-                        </tr>
-                    {% endfor %}
+                        {% for item in sale.items.all %}
+                            <tr>
+                                <td>{{ item.get_sale_type_display }}</td>
+                                <td>
+                                    {% if item.perfume %}
+                                        {{ item.perfume }}
+                                    {% elif item.cosmetic %}
+                                        {{ item.cosmetic }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if item.ml %}{{ item.ml }} мл{% endif %}
+                                    {% if item.bottles_count %}{{ item.bottles_count }} фл.{% endif %}
+                                    {% if item.sale_type == 'split' and item.bottle_count %}
+                                        {{ item.bottle_count }} атомайзер(ов)
+                                    {% elif item.sale_type == 'cosmetic' and item.bottle_count %}
+                                        {{ item.bottle_count }} шт.
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if item.bottle_type %}
+                                        {{ item.bottle_type }}
+                                    {% endif %}
+                                </td>
+                                <td class="text-danger fw-semibold">
+                                    {{ item.discount }} сом
+                                </td>
+                                <td class="fw-semibold">
+                                    {{ item.line_total }} сом
+                                </td>
+                            </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
             </div>
-            <div class="d-flex justify-content-end gap-3">
-                <a href="{% url 'sale_print' sale.id %}" class="btn btn-sm btn-outline-primary">
-                        🖨 Печать
-                </a>
-                <span class="fw-bold">Итого по чеку: {{ sale.total }} сом</span>
-            </div>
 
+            <div class="d-flex justify-content-between align-items-center">
+                <button
+                    class="btn btn-sm btn-outline-primary"
+                    id="print-btn-{{ sale.id }}"
+                    onclick="printSale({{ sale.id }})">
+                    🖨 Печать
+                </button>
+
+                <span class="fw-bold">
+                    Итого: {{ sale.total }} сом
+                </span>
+            </div>
         </div>
     {% endfor %}
+
+    <script>
+        function printSale(saleId) {
+            const btn = document.getElementById(`print-btn-${saleId}`);
+            btn.disabled = true;
+            btn.innerText = "⏳ Отправка...";
+
+            fetch(`/sales/print/${saleId}/`, {
+                method: "POST",
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest"
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("HTTP " + response.status);
+                }
+                btn.innerText = "✅ Отправлено";
+            })
+            .catch(error => {
+                console.error(error);
+                btn.disabled = false;
+                btn.innerText = "❌ Ошибка";
+                alert("Ошибка при отправке чека на печать");
+            });
+        }
+    </script>
 {% endblock %}

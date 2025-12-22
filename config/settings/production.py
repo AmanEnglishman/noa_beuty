@@ -65,4 +65,4 @@ LOGGING = {
     },
 }
 
-CSRF_TRUSTED_ORIGINS = ["http://77.95.206.95",]
+CSRF_TRUSTED_ORIGINS = ["http://77.95.206.95:8000",]

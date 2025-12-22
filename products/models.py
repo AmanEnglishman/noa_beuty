@@ -38,7 +38,7 @@ class Perfume(models.Model):
         verbose_name_plural = "Парфюмы"
 
     def __str__(self):
-        return f"{self.brand.name} {self.name} ({self.bottle_volume_ml} мл)"
+        return f"{self.brand.name} {self.name}"
 
 class CosmeticProduct(models.Model):
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE, related_name="cosmetics", verbose_name="Бренд")

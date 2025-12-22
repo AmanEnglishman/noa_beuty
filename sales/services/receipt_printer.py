@@ -1,117 +1,152 @@
-from datetime import datetime
+# sales/services/receipt_renderer.py
+
+import os
+import io
 from PIL import Image, ImageDraw, ImageFont
 from sales.models import Sale
 
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
-# =========================
-# Инициализация принтера
-# =========================
-printer = None
-
-try:
-    from escpos.printer import Usb
-    printer = Usb(0x0fe6, 0x811e)
-    print(">>> ESC/POS PRINTER INITIALIZED")
-except Exception as e:
-    print(">>> PRINTER INIT ERROR:", e)
-    printer = None
+FONT_REGULAR = os.path.join(BASE_DIR, "fonts", "DejaVuSans.ttf")
+FONT_BOLD = os.path.join(BASE_DIR, "fonts", "DejaVuSans-Bold.ttf")
 
 
-# =========================
-# Печать чека
-# =========================
-def print_sale_receipt(sale_id: int) -> str:
-    print(f">>> PRINT RECEIPT CALLED: sale_id={sale_id}")
+def load_fonts():
+    return {
+        "title": ImageFont.truetype(FONT_BOLD, 30),
+        "bold": ImageFont.truetype(FONT_BOLD, 24),
+        "normal": ImageFont.truetype(FONT_REGULAR, 22),
+        "small": ImageFont.truetype(FONT_REGULAR, 20),
+    }
 
+
+def clean_item_name(name: str) -> str:
+    return (
+        name.replace("Split:", "")
+            .replace("мл", "")
+            .strip()
+    )
+
+
+def render_sale_receipt_png(sale_id: int) -> bytes:
     sale = Sale.objects.prefetch_related("items").get(id=sale_id)
 
-    # ---- Параметры чека ----
-    WIDTH = 384          # 58мм
-    PADDING = 10
-    LINE_HEIGHT = 28
+    fonts = load_fonts()
 
-    # ---- Шрифты ----
-    font_big = ImageFont.truetype(
-        "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 28
-    )
-    font_normal = ImageFont.truetype(
-        "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 22
-    )
-    font_small = ImageFont.truetype(
-        "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 20
-    )
+    WIDTH = 384  # 58 мм
+    PADDING = 12
+    LINE_HEIGHT = 30
+    RIGHT_COL_X = WIDTH - PADDING
 
-    lines: list[tuple[str, ImageFont.FreeTypeFont]] = []
+    lines = []
 
-    def add(text: str, font=font_normal):
-        lines.append((text, font))
+    def add(text, font, align="left"):
+        lines.append((text, font, align))
 
-    # ---- Заголовок ----
-    add("NOA BEAUTY SHOP", font_big)
-    add("г. Бишкек, ул. Юнусалиева 177/2", font_small)
-    add("+996 990 200 856", font_small)
-    add(f"Чек № {sale.id}", font_small)
-    add(sale.sale_date.strftime("%d.%m.%Y %H:%M"), font_small)
-    add("-" * 32)
+    # ===== HEADER =====
+    add("NOA BEAUTY", fonts["title"], "center")
+    add("г. Бишкек, ул. Юнусалиева 177/2", fonts["small"], "center")
+    add("+996 990 20 08 56", fonts["small"], "center")
+    add("-" * 32, fonts["small"], "center")
 
-    # ---- Таблица ----
-    COL1, COL2, COL3 = 16, 6, 8
-    add(f"{'Товар':<{COL1}} {'Кол':<{COL2}} {'Сумма':<{COL3}}")
-    add("-" * 32)
+    add(f"Чек № {sale.id}", fonts["small"])
+    add(sale.sale_date.strftime("%d.%m.%Y  %H:%M"), fonts["small"])
+    add("-" * 32, fonts["small"], "center")
 
+    # ===== ITEMS =====
     for item in sale.items.all():
-        if item.perfume:
+
+    # ---- NAME ----
+        if item.sale_type in ("full", "split"):
             name = str(item.perfume)
-            if item.sale_type == "split":
-                qty = f"{item.ml}мл"
-                if item.bottle_count:
-                    qty += f"({item.bottle_count}ат)"
-            else:
-                qty = item.bottles_count
-        elif item.cosmetic:
-            name = str(item.cosmetic)
-            qty = item.bottle_count
         else:
-            name = "Товар"
-            qty = 1
+            name = str(item.cosmetic)
 
-        line = f"{name[:COL1]:<{COL1}} {str(qty):<{COL2}} {item.line_total:<{COL3}}"
-        add(line)
+        name = clean_item_name(name)
+        add(name[:32], fonts["normal"])
 
-    # ---- Итоги ----
-    add("-" * 32)
-    add(f"ИТОГО: {sale.total} сом", font_big)
+        # ---- QTY ----
+        if item.sale_type == "full":
+            qty = item.bottles_count
+            qty_text = f"{qty} шт"
+        elif item.sale_type == "split":
+            qty = item.ml
+            qty_text = f"{qty:g} мл"
+        else:
+            qty = item.bottle_count
+            qty_text = f"{qty} шт"
 
-    if sale.discount:
-        add(f"Скидка: {sale.discount} сом", font_small)
+        # ---- PRICE ----
+        price = item.unit_price
 
-    add("-" * 32)
-    add("Спасибо за покупку!", font_small)
+        # ---- BASE TOTAL (БЕЗ СКИДКИ) ----
+        base_total = round(price * qty)
 
-    # ---- Рендер изображения ----
+        # ---- DISCOUNT SUM ----
+        discount_sum = round(
+            base_total * item.discount_percent / 100
+        )
+
+        # ---- строка: количество × цена | БАЗОВАЯ сумма ----
+        left = f"{qty_text} × {price}"
+        right = f"{base_total}"
+
+        lines.append((left, fonts["small"], "left-right", right))
+
+        # ---- строка скидки ----
+        if item.discount_percent > 0:
+            discount_left = f"Скидка {item.discount_percent}%"
+            discount_right = f"-{discount_sum}"
+
+            lines.append(
+                (discount_left, fonts["small"], "left-right", discount_right)
+            )
+
+    add("-" * 32, fonts["small"], "center")
+
+    # ===== CHECK DISCOUNT =====
+    if sale.discount_percent > 0:
+        items_total = sum(i.line_total for i in sale.items.all())
+        sale_discount_sum = round(
+            items_total * sale.discount_percent / 100
+        )
+        add(
+            f"Скидка на чек {sale.discount_percent}%",
+            fonts["small"],
+            "center",
+        )
+        add(f"-{sale_discount_sum} сом", fonts["small"], "center")
+        add("-" * 32, fonts["small"], "center")
+
+    # ===== TOTAL =====
+    add("ИТОГО", fonts["bold"], "center")
+    add(f"{sale.total} сом", fonts["title"], "center")
+
+    add("-" * 32, fonts["small"], "center")
+    add("Твоя лучшая покупка за сегодня!", fonts["small"], "center")
+
+    # ===== RENDER =====
     height = PADDING * 2 + LINE_HEIGHT * len(lines)
     img = Image.new("L", (WIDTH, height), 255)
     draw = ImageDraw.Draw(img)
 
     y = PADDING
-    for text, font in lines:
-        draw.text((PADDING, y), text, font=font, fill=0)
+    for line in lines:
+        if len(line) == 3:
+            text, font, align = line
+            if align == "center":
+                w = draw.textlength(text, font=font)
+                x = (WIDTH - w) // 2
+            else:
+                x = PADDING
+            draw.text((x, y), text, fill=0, font=font)
+        else:
+            left, font, _, right = line
+            draw.text((PADDING, y), left, fill=0, font=font)
+            w = draw.textlength(right, font=font)
+            draw.text((RIGHT_COL_X - w, y), right, fill=0, font=font)
         y += LINE_HEIGHT
 
-    path = f"/tmp/receipt_{sale.id}.png"
-    img.save(path)
-    print(">>> RECEIPT IMAGE SAVED:", path)
-
-    # ---- Печать ----
-    if printer is None:
-        print(">>> PRINTER IS NONE — PRINT SKIPPED")
-    else:
-        try:
-            print(">>> SENDING IMAGE TO PRINTER")
-            printer.image(path)
-            printer.cut()
-            print(">>> PRINT SUCCESS")
-        except Exception as e:
-            print(">>> PRINT ERROR:", e)
-
-    return path
+    buffer = io.BytesIO()
+    img.save(buffer, format="PNG")
+    return buffer.getvalue()
