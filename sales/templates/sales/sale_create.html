@@ -23,6 +23,8 @@
         .summary-discount, .sumline-discount { color:#d72233; font-weight:700; }
         .ost-label { font-size:.93em; color:#338; margin-left:6px; }
         .tara-price { font-size:.98em; color:#2b4; margin-left:0.7em; font-weight:500; } .tara-free { color:#888; }
+        .product-search-input { font-size: 0.9em; padding: 4px 8px; border-radius: 4px; border: 1px solid #ccd; width: 98%; margin-bottom: 4px; }
+        .product-search-input::placeholder { color: #999; }
     </style>
 {% endblock %}
 
@@ -36,7 +38,7 @@
     let bottleOptions = {};
     {% for p in perfumes %}productOptions[{{p.id}}] = {price_ml: {{p.price_per_ml}}, price_bottle: {{p.full_bottle_price}}, bottle_ml: {{p.bottle_volume_ml}}, name: "{{p.brand}} {{p.name}}"}; productStock[{{p.id}}] = 999; /* TODO: заменить на фактический остаток */
     {% endfor %}
-    {% for c in cosmetics %}cosmeticOptions[{{c.id}}] = {price: {{c.unit_price}}, name: "{{c.brand}} {{c.name}}"}; cosmeticStock[{{c.id}}] = {{c.stock}};
+    {% for c in cosmetics %}cosmeticOptions[{{c.id}}] = {price: {{c.unit_price}}, name: "{{c.brand}} {{c.name}}"}; cosmeticStock[{{c.id}}] = null;
     {% endfor %}
     {% for b in bottles %}bottleOptions[{{b.id}}] = {price: {{b.price}}, volume_ml: {{b.volume_ml}}, name: "{{b.name}}", is_paid: {{b.is_paid|yesno:'1,0'}}, label: "{{b.name}} {{b.volume_ml}} мл{% if b.is_paid %} ({{b.price}} сом){% else %} (бесплатно){% endif %}"};
     {% endfor %}
@@ -58,17 +60,33 @@
          </div>
          <div class='field-group perfume-gr'>
            <label class='row-label'>Парфюм</label>
+           <input type="text"
+                  class="product-search-input perfume-search"
+                  placeholder="Поиск по названию, бренду или штрихкоду"
+                  oninput="filterPerfumeOptions(this)" />
            <select name="perfume" class="perfume" onchange="onPerfumeChange(this)">
               <option value="">-- Выберите парфюм --</option>
-              {% for p in perfumes %}<option value="{{p.id}}">{{p.brand}} {{p.name}}</option>{% endfor %}
+              {% for p in perfumes %}
+                  <option value="{{p.id}}">
+                      {{p.brand}} {{p.name}}{% if p.barcode %} — {{p.barcode}}{% endif %}
+                  </option>
+              {% endfor %}
            </select>
            <span class='ost-label perfume-ost' style='display:none'>остаток: n/a</span>
          </div>
          <div class='field-group cosmetic-gr' style='display:none'>
            <label class='row-label'>Косметика</label>
+           <input type="text"
+                  class="product-search-input cosmetic-search"
+                  placeholder="Поиск по названию, бренду или штрихкоду"
+                  oninput="filterCosmeticOptions(this)" />
            <select name="cosmetic" class="cosmetic" onchange="onCosmeticChange(this)">
              <option value="">-- Выберите косметику --</option>
-             {% for c in cosmetics %}<option value="{{c.id}}">{{c.brand}} {{c.name}}</option>{% endfor %}
+             {% for c in cosmetics %}
+                 <option value="{{c.id}}">
+                     {{c.brand}} {{c.name}}{% if c.barcode %} — {{c.barcode}}{% endif %}
+                 </option>
+             {% endfor %}
            </select>
            <span class='ost-label cosmetic-ost' style='display:none'>остаток: n/a</span>
          </div>
@@ -119,6 +137,31 @@
       row.querySelector('.tara-qty-group').style.display = (type === 'split') ? '' : 'none';
       summaryUpdate();
     }
+    function filterPerfumeOptions(input) {
+      const row = input.closest('.basket-row');
+      const select = row.querySelector('select.perfume');
+      const term = input.value.toLowerCase().trim();
+      if (!term) {
+        // если поле очистили — сбрасываем выбор
+        select.value = "";
+        onPerfumeChange(select);
+        return;
+      }
+      let firstMatch = null;
+      const options = Array.from(select.options);
+      for (let opt of options) {
+        if (!opt.value) continue;  // пропускаем placeholder
+        const text = opt.textContent.toLowerCase();
+        if (text.includes(term)) {
+          firstMatch = opt.value;
+          break;
+        }
+      }
+      if (firstMatch) {
+        select.value = firstMatch;
+        onPerfumeChange(select);
+      }
+    }
     function onPerfumeChange(sel) {
       let row = sel.closest('.basket-row');
       let type = row.querySelector('.itm-type').value;
@@ -150,6 +193,30 @@
         lbl.style.display = 'none';
       }
       summaryUpdate();
+    }
+    function filterCosmeticOptions(input) {
+      const row = input.closest('.basket-row');
+      const select = row.querySelector('select.cosmetic');
+      const term = input.value.toLowerCase().trim();
+      if (!term) {
+        select.value = "";
+        onCosmeticChange(select);
+        return;
+      }
+      let firstMatch = null;
+      const options = Array.from(select.options);
+      for (let opt of options) {
+        if (!opt.value) continue;
+        const text = opt.textContent.toLowerCase();
+        if (text.includes(term)) {
+          firstMatch = opt.value;
+          break;
+        }
+      }
+      if (firstMatch) {
+        select.value = firstMatch;
+        onCosmeticChange(select);
+      }
     }
     function onCosmeticChange(sel) {
       let row = sel.closest('.basket-row');
@@ -217,10 +284,14 @@
         {% csrf_token %}
         <div id="basket"></div>
         <button type="button" class="add-btn" onclick="addRow()">+ Добавить товар/позицию</button>
-        <div class="summary">
-          <span class="sumline">Сумма по товарам: <span id="summary_total" class="summary-total">0</span> сом</span><br>
-          <span class="sumline">Общая скидка на товары: <span id="summary_discount" class="summary-discount">0</span> сом</span>
+        <label class="row-label">Тип оплаты</label>
         </div>
+        <select name="payment_method" required>
+          <option value="">— выберите —</option>
+          {% for method in payment_methods %}
+              <option value="{{ method.id }}">{{ method.name }}</option>
+          {% endfor %}
+      </select>
         <div class="field-group">
           <label for="sale_discount">Скидка на чек (дополнительно, сом)</label>
           <input type="number" min="0" value="0" name="sale_discount" id="sale_discount"/>

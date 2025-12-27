@@ -4,16 +4,14 @@ from django.db import transaction
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
 
-from .models import Sale, SaleItem
-from .models import PrintQueue
+from .models import Sale, SaleItem, PaymentMethod, PrintQueue
 from products.models import Perfume, BottleType, CosmeticProduct
 from inventory.services import apply_sale_item_to_stocks
 
-from django.http import FileResponse, Http404
+from django.http import FileResponse, Http404, JsonResponse
 import os
 
 import requests
-from django.http import JsonResponse
 
 @csrf_exempt
 def enqueue_print(request, sale_id):
@@ -33,6 +31,7 @@ def sales_today(request):
     sales = (
         Sale.objects
         .filter(sale_date__date=today)
+        .select_related("payment_method")
         .prefetch_related("items")
         .order_by("-sale_date")
     )
@@ -47,18 +46,30 @@ def sales_today(request):
     )
 
 
+
 # =========================
-# Создание продажи
+# Создание продажи 
 # =========================
 def sale_create(request):
     perfumes = Perfume.objects.select_related("brand").all()
     bottles = BottleType.objects.all()
     cosmetics = CosmeticProduct.objects.all()
+    payment_methods = PaymentMethod.objects.filter(is_active=True)
+
     error = None
 
     if request.method == "POST":
         try:
             with transaction.atomic():
+
+                # ===== ТИП ОПЛАТЫ =====
+                payment_method_id = request.POST.get("payment_method")
+                if not payment_method_id:
+                    raise ValueError("Не выбран тип оплаты")
+
+                payment_method = get_object_or_404(
+                    PaymentMethod, id=payment_method_id
+                )
 
                 items_data = []
                 items_total = 0
@@ -71,7 +82,7 @@ def sale_create(request):
                 bottle_type_ids = request.POST.getlist("bottle_type")
                 atomizer_qties = request.POST.getlist("atomizer_qty")
                 prices = request.POST.getlist("price")
-                item_discounts = request.POST.getlist("item_discount")  # %
+                item_discounts = request.POST.getlist("item_discount")
 
                 # ===== СБОР ПОЗИЦИЙ =====
                 for i, sale_type in enumerate(types):
@@ -82,7 +93,7 @@ def sale_create(request):
                     ml = float(ml_qties[i]) if ml_qties[i] else 0
                     bottles_count = int(bottle_qties[i]) if bottle_qties[i] else 0
                     bottle_type_id = bottle_type_ids[i] or None
-                    atomizer_count = int(atomizer_qties[i]) if atomizer_qties[i] and sale_type == "split" else 0
+                    atomizer_count = int(atomizer_qties[i]) if atomizer_qties[i] else 0
 
                     price = int(prices[i]) if prices[i] else 0
                     discount_percent = int(item_discounts[i]) if item_discounts[i] else 0
@@ -95,10 +106,7 @@ def sale_create(request):
                     else:
                         qty = 1
 
-                    # ---- BASE TOTAL ----
                     base_total = price * qty
-
-                    # ---- ITEM DISCOUNT ----
                     discount_sum = round(base_total * discount_percent / 100)
                     line_total = max(0, base_total - discount_sum)
 
@@ -127,8 +135,9 @@ def sale_create(request):
                 sale_discount_percent = int(request.POST.get("sale_discount", 0))
 
                 sale = Sale.objects.create(
+                    payment_method=payment_method,
                     discount_percent=sale_discount_percent,
-                    total=0,  # временно
+                    total=0,
                 )
 
                 # ===== СОЗДАНИЕ ПОЗИЦИЙ =====
@@ -165,6 +174,9 @@ def sale_create(request):
                 sale.total = max(0, items_total - sale_discount_sum)
                 sale.save()
 
+                # ===== В ОЧЕРЕДЬ ПЕЧАТИ =====
+                PrintQueue.objects.create(sale=sale)
+
                 messages.success(request, "Продажа успешно сохранена")
                 return redirect("sales_today")
 
@@ -178,9 +190,11 @@ def sale_create(request):
             "perfumes": perfumes,
             "bottles": bottles,
             "cosmetics": cosmetics,
+            "payment_methods": payment_methods,
             "error": error,
         }
     )
+
 
 
 

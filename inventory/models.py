@@ -28,14 +28,14 @@ class PerfumeStock(models.Model):
         return self.get_total_ml_available() >= ml_needed
 
 class BottleStock(models.Model):
-    bottle_type = models.ForeignKey(BottleType, on_delete=models.CASCADE, verbose_name="Тип тары")
+    bottle_type = models.ForeignKey(BottleType, on_delete=models.CASCADE, verbose_name="Тип атомайзера")
     stock = models.PositiveIntegerField(default=0, help_text="Остаток данного вида бутылочек (штук)", verbose_name="Остаток (шт)")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Добавлено")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Обновлено")
 
     class Meta:
-        verbose_name = "Остаток тары"
-        verbose_name_plural = "Остатки тары"
+        verbose_name = "Остаток Атомайзера"
+        verbose_name_plural = "Остатки Атомайзеров"
         unique_together = [['bottle_type']]
 
     def __str__(self):

@@ -13,9 +13,9 @@ class Brand(models.Model):
         return self.name
 
 class BottleType(models.Model):
-    name = models.CharField(max_length=100, verbose_name="Название тары")
+    name = models.CharField(max_length=100, verbose_name="Название атомайзера")
     volume_ml = models.PositiveIntegerField(help_text="Объем в мл", verbose_name="Объем (мл)")
-    is_paid = models.BooleanField(default=False, help_text="Платная или бесплатная тара", verbose_name="Платная тара")
+    is_paid = models.BooleanField(default=False, help_text="Платный или бесплатный атомайзер", verbose_name="Платный атомайзер")
     price = models.PositiveIntegerField(default=0, help_text="Цена за флакон (если платный)", verbose_name="Цена (сом)")
 
     class Meta:
@@ -45,7 +45,6 @@ class CosmeticProduct(models.Model):
     name = models.CharField(max_length=150, verbose_name="Название")
     barcode = models.CharField(max_length=50, blank=True, null=True, unique=True, verbose_name="Штрихкод")
     unit_price = models.PositiveIntegerField(help_text="Цена за штуку, сом", verbose_name="Цена (сом)")
-    stock = models.PositiveIntegerField(default=0, help_text="Остаток на складе, шт", verbose_name="Остаток (шт)")
 
     class Meta:
         verbose_name = "Косметика"

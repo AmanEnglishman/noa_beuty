@@ -19,6 +19,6 @@ class PerfumeAdmin(admin.ModelAdmin):
 
 @admin.register(CosmeticProduct)
 class CosmeticProductAdmin(admin.ModelAdmin):
-    list_display = ("id", "brand", "name", "unit_price", "stock")
+    list_display = ("id", "brand", "name", "unit_price", )
     search_fields = ("name",)
     list_filter = ("brand",)

@@ -107,9 +107,4 @@ def apply_sale_item_to_stocks(
         cosmetic_stock.stock = max(0, cosmetic_stock.stock - bottle_count)
         cosmetic_stock.save(update_fields=["stock", "updated_at"])
 
-        # По желанию поддерживаем синхронизацию агрегированного остатка в продукте
-        if hasattr(cosmetic, "stock"):
-            cosmetic.stock = max(0, (cosmetic.stock or 0) - bottle_count)
-            cosmetic.save(update_fields=["stock"])
-
 

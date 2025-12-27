@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Sale, SaleItem, Expense, Income
+from .models import Sale, SaleItem, Expense, Income, PaymentMethod
 
 
 class SaleItemInline(admin.TabularInline):
@@ -34,3 +34,8 @@ class ExpenseAdmin(admin.ModelAdmin):
 class IncomeAdmin(admin.ModelAdmin):
     list_display = ("id", "date", "description", "amount")
     search_fields = ("description",)
+
+
+@admin.register(PaymentMethod)
+class PaymentMethodAdmin(admin.ModelAdmin):
+    pass

@@ -1,4 +1,5 @@
 from django_filters.views import FilterView
+from django.shortcuts import render
 from .models import PerfumeStock, BottleStock, CosmeticStock
 from .filters import (
     PerfumeStockFilter,
@@ -26,3 +27,7 @@ class CosmeticStockListView(FilterView):
     template_name = "inventory/cosmetic_stock_list.html"
     filterset_class = CosmeticStockFilter
     context_object_name = "stocks"
+
+
+def inventory_hub(request):
+    return render(request, 'inventory/hub.html')

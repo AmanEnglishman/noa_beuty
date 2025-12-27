@@ -2,11 +2,35 @@ from django.db import models
 from products.models import Perfume, BottleType, CosmeticProduct
 from inventory.models import BottleStock
 
+class PaymentMethod(models.Model):
+    name = models.CharField(max_length=100, verbose_name="Название")
+    method_type = models.CharField(
+        max_length=100,
+        verbose_name="Тип оплаты"
+    )
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        verbose_name = "Способ оплаты"
+        verbose_name_plural = "Способы оплаты"
+
+    def __str__(self):
+        return self.name
+
+
 class Sale(models.Model):
     sale_date = models.DateTimeField(auto_now_add=True, verbose_name="Дата продажи")
     discount_percent = models.PositiveSmallIntegerField(default=0, help_text="Скидка на чек (%)", verbose_name="Скидка на чек (%)")
 
     total = models.PositiveIntegerField(default=0, help_text="Итоговая сумма чека, сом", verbose_name="Итоговая сумма")
+
+    payment_method = models.ForeignKey(
+        PaymentMethod,
+        on_delete=models.PROTECT,
+        verbose_name="Способ оплаты",
+        null=True,
+        blank=True,
+    )
 
     class Meta:
         verbose_name = "Продажа"
