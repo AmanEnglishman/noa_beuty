@@ -54,7 +54,7 @@ class SaleItem(models.Model):
     cosmetic = models.ForeignKey(CosmeticProduct, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Косметика")
     bottles_count = models.PositiveIntegerField(default=0, help_text="Флаконов (для продажи целиком)", verbose_name="Количество флаконов")
     ml = models.FloatField(default=0, help_text="Количество мл (для распива)", verbose_name="Количество (мл)")
-    bottle_type = models.ForeignKey(BottleType, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Тип тары")
+    bottle_type = models.ForeignKey(BottleType, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Тип атомайзеров")
     bottle_count = models.PositiveIntegerField(default=0, help_text="Тара на распив (шт)", verbose_name="Количество тары (шт)")
     unit_price = models.PositiveIntegerField(help_text="Цена за 1 мл или 1 ед.", verbose_name="Цена за ед./мл")
     discount_percent = models.PositiveSmallIntegerField(default=0, help_text="Скидка на позицию (%)", verbose_name="Скидка (%)")

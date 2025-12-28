@@ -117,7 +117,7 @@ class SplitSalesFilter(django_filters.FilterSet):
     )
     bottle_type = django_filters.ModelChoiceFilter(
         queryset=BottleType.objects.all().order_by('name'),
-        label="Тип тары"
+        label="Тип атомайзеров"
     )
 
     class Meta:

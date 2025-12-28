@@ -425,8 +425,8 @@
       let btlId = sel.value;
       let lbl = row.querySelector('.tara-price');
       if (btlId && bottleOptions[btlId]) {
-        if(bottleOptions[btlId].is_paid) lbl.innerText = 'Платная тара: '+bottleOptions[btlId].price+' сом/шт.';
-        else lbl.innerText = 'Бесплатная тара';
+        if(bottleOptions[btlId].is_paid) lbl.innerText = 'Платный атомайзер: '+bottleOptions[btlId].price+' сом/шт.';
+        else lbl.innerText = 'Бесплатный атомайзер';
         lbl.style.display = '';
       } else {
         lbl.style.display = 'none';

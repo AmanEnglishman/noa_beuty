@@ -19,8 +19,8 @@ class BottleType(models.Model):
     price = models.PositiveIntegerField(default=0, help_text="Цена за флакон (если платный)", verbose_name="Цена (сом)")
 
     class Meta:
-        verbose_name = "Тип тары"
-        verbose_name_plural = "Типы тары"
+        verbose_name = "Тип атомайзеров"
+        verbose_name_plural = "Типы атомайзеров"
 
     def __str__(self):
         return f"{self.name} ({self.volume_ml} мл)"
