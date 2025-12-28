@@ -1,5 +1,7 @@
 import django_filters
 from .models import PerfumeStock, BottleStock, CosmeticStock
+from sales.models import SaleItem
+from products.models import Perfume, Brand, BottleType
 
 
 class PerfumeStockFilter(django_filters.FilterSet):
@@ -75,4 +77,49 @@ class CosmeticStockFilter(django_filters.FilterSet):
 
     class Meta:
         model = CosmeticStock
+        fields = []
+
+
+class SplitSalesFilter(django_filters.FilterSet):
+    perfume = django_filters.ModelChoiceFilter(
+        queryset=Perfume.objects.select_related('brand').all().order_by('brand__name', 'name'),
+        label="Парфюм"
+    )
+    brand = django_filters.ModelChoiceFilter(
+        field_name="perfume__brand",
+        queryset=Brand.objects.all().order_by('name'),
+        label="Бренд"
+    )
+    perfume_name = django_filters.CharFilter(
+        field_name="perfume__name",
+        lookup_expr="icontains",
+        label="Название парфюма (поиск)"
+    )
+    date_from = django_filters.DateFilter(
+        field_name="sale__sale_date__date",
+        lookup_expr="gte",
+        label="Дата от"
+    )
+    date_to = django_filters.DateFilter(
+        field_name="sale__sale_date__date",
+        lookup_expr="lte",
+        label="Дата до"
+    )
+    ml_min = django_filters.NumberFilter(
+        field_name="ml",
+        lookup_expr="gte",
+        label="Мл от"
+    )
+    ml_max = django_filters.NumberFilter(
+        field_name="ml",
+        lookup_expr="lte",
+        label="Мл до"
+    )
+    bottle_type = django_filters.ModelChoiceFilter(
+        queryset=BottleType.objects.all().order_by('name'),
+        label="Тип тары"
+    )
+
+    class Meta:
+        model = SaleItem
         fields = []

@@ -12,5 +12,5 @@ urlpatterns = [
     path("perfume/", PerfumeStockListView.as_view(), name="perfume-stock"),
     path("bottle/", BottleStockListView.as_view(), name="bottle-stock"),
     path("cosmetic/", CosmeticStockListView.as_view(), name="cosmetic-stock"),
-    path("split/", SplitSalesListView, name="split-sales"),
+    path("split/", SplitSalesListView.as_view(), name="split-sales"),
 ]

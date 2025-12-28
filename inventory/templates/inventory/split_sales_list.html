@@ -7,6 +7,19 @@
 {% endblock %}
 
 {% block content %}
+    <form method="get" class="row mb-3 g-3">
+        {% for field in filter.form %}
+            <div class="col-md-3">
+                <label class="form-label">{{ field.label }}</label>
+                {{ field }}
+            </div>
+        {% endfor %}
+        <div class="col-12">
+            <button class="btn btn-primary">Фильтр</button>
+            <a href="{% url 'split-sales' %}" class="btn btn-outline-secondary">Сбросить</a>
+        </div>
+    </form>
+
 <div class="table-responsive">
     <table class="table table-bordered table-striped align-middle mb-0">
         <thead>
@@ -21,7 +34,7 @@
             </tr>
         </thead>
         <tbody>
-        {% for item in split_items %}
+        {% for item in object_list %}
             <tr>
                 <td>{{ forloop.counter }}</td>
                 <td>{{ item.sale.sale_date|date:"d.m.Y H:i" }}</td>

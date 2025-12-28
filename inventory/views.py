@@ -4,7 +4,8 @@ from .models import PerfumeStock, BottleStock, CosmeticStock
 from .filters import (
     PerfumeStockFilter,
     BottleStockFilter,
-    CosmeticStockFilter
+    CosmeticStockFilter,
+    SplitSalesFilter
 )
 from sales.models import SaleItem
 
@@ -26,10 +27,16 @@ class CosmeticStockListView(FilterView):
     filterset_class = CosmeticStockFilter
     context_object_name = "stocks"
 
-def SplitSalesListView(request):
-    # Показать все распивы
-    split_items = SaleItem.objects.filter(sale_type="split").select_related("sale", "perfume", "bottle_type")
-    return render(request, "inventory/split_sales_list.html", {"split_items": split_items})
+class SplitSalesListView(FilterView):
+    model = SaleItem
+    template_name = "inventory/split_sales_list.html"
+    filterset_class = SplitSalesFilter
+    context_object_name = "split_items"
+    
+    def get_queryset(self):
+        return SaleItem.objects.filter(sale_type="split").select_related(
+            "sale", "perfume", "perfume__brand", "bottle_type"
+        ).order_by("-sale__sale_date")
 
 def inventory_hub(request):
     return render(request, 'inventory/hub.html')

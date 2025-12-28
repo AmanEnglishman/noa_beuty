@@ -57,13 +57,14 @@ def apply_sale_item_to_stocks(
     - full  : уменьшает количество полных флаконов парфюма
     - split : уменьшает остаток мл парфюма и количество тары
     - cosmetic : уменьшает остаток косметики (и при необходимости синхронизирует поле stock у продукта)
+    - gift  : списывает со склада как full/split/cosmetic в зависимости от типа товара
     """
-    if sale_type == "full" and perfume and bottles_count > 0:
+    if sale_type in ("full", "gift") and perfume and bottles_count > 0:
         perfume_stock = get_or_create_perfume_stock(perfume)
         perfume_stock.bottles_left = max(0, perfume_stock.bottles_left - bottles_count)
         perfume_stock.save(update_fields=["bottles_left", "updated_at"])
 
-    elif sale_type == "split" and perfume:
+    elif sale_type in ("split", "gift") and perfume and ml > 0:
         perfume_stock = get_or_create_perfume_stock(perfume)
         
         if ml > 0:
@@ -102,7 +103,7 @@ def apply_sale_item_to_stocks(
             bottle_stock.stock = max(0, bottle_stock.stock - bottle_count)
             bottle_stock.save(update_fields=["stock", "updated_at"])
 
-    elif sale_type == "cosmetic" and cosmetic and bottle_count > 0:
+    elif sale_type in ("cosmetic", "gift") and cosmetic and bottle_count > 0:
         cosmetic_stock = get_or_create_cosmetic_stock(cosmetic)
         cosmetic_stock.stock = max(0, cosmetic_stock.stock - bottle_count)
         cosmetic_stock.save(update_fields=["stock", "updated_at"])

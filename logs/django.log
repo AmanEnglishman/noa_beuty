@@ -421,3 +421,86 @@ INFO 2025-12-28 06:10:26,414 autoreload 2034 131805053051008 /home/aman/noa_beut
 INFO 2025-12-28 06:10:26,904 autoreload 2163 138249424437376 Watching for file changes with StatReloader
 INFO 2025-12-28 06:10:32,127 autoreload 2163 138249424437376 /home/aman/noa_beuty/finance/views.py changed, reloading.
 INFO 2025-12-28 06:10:32,387 autoreload 2211 139952669036672 Watching for file changes with StatReloader
+INFO 2025-12-28 06:18:36,230 autoreload 2795 138538528292992 Watching for file changes with StatReloader
+INFO 2025-12-28 06:18:38,929 log 2795 138538397988544 "GET /inventory/ HTTP/1.1" 200 1745
+INFO 2025-12-28 06:18:39,403 log 2795 138538397988544 "GET /inventory/ HTTP/1.1" 200 1745
+WARNING 2025-12-28 06:18:42,950 log 2795 138538397988544 Not Found: /i
+WARNING 2025-12-28 06:18:42,950 log 2795 138538397988544 "GET /i HTTP/1.1" 404 2877
+INFO 2025-12-28 06:18:44,931 log 2795 138538397988544 "GET / HTTP/1.1" 200 6422
+INFO 2025-12-28 06:18:48,119 log 2795 138538397988544 "GET /sales/new/ HTTP/1.1" 200 19140
+INFO 2025-12-28 06:19:35,799 log 2795 138538397988544 "GET / HTTP/1.1" 200 6422
+INFO 2025-12-28 06:19:36,716 log 2795 138538397988544 "GET /sales/new/ HTTP/1.1" 200 19140
+INFO 2025-12-28 06:19:55,235 log 2795 138538397988544 "GET / HTTP/1.1" 200 6422
+INFO 2025-12-28 06:20:29,302 autoreload 2795 138538528292992 /home/aman/noa_beuty/inventory/filters.py changed, reloading.
+INFO 2025-12-28 06:20:29,582 autoreload 2973 130235863699584 Watching for file changes with StatReloader
+INFO 2025-12-28 06:20:32,766 autoreload 2973 130235863699584 /home/aman/noa_beuty/inventory/filters.py changed, reloading.
+INFO 2025-12-28 06:20:33,009 autoreload 3023 131686502793344 Watching for file changes with StatReloader
+INFO 2025-12-28 06:20:34,851 autoreload 3023 131686502793344 /home/aman/noa_beuty/inventory/views.py changed, reloading.
+INFO 2025-12-28 06:20:35,106 autoreload 3025 130555199189120 Watching for file changes with StatReloader
+INFO 2025-12-28 06:20:36,277 autoreload 3025 130555199189120 /home/aman/noa_beuty/inventory/views.py changed, reloading.
+INFO 2025-12-28 06:20:36,527 autoreload 3038 133429830959232 Watching for file changes with StatReloader
+INFO 2025-12-28 06:20:37,653 autoreload 3038 133429830959232 /home/aman/noa_beuty/inventory/urls.py changed, reloading.
+INFO 2025-12-28 06:20:37,919 autoreload 3047 127241444868224 Watching for file changes with StatReloader
+INFO 2025-12-28 06:20:46,127 autoreload 3047 127241444868224 /home/aman/noa_beuty/inventory/filters.py changed, reloading.
+INFO 2025-12-28 06:20:46,387 autoreload 3104 131664496873600 Watching for file changes with StatReloader
+INFO 2025-12-28 06:20:49,562 autoreload 3104 131664496873600 /home/aman/noa_beuty/inventory/filters.py changed, reloading.
+INFO 2025-12-28 06:20:49,804 autoreload 3124 133069111435392 Watching for file changes with StatReloader
+INFO 2025-12-28 06:20:57,993 autoreload 3124 133069111435392 /home/aman/noa_beuty/inventory/urls.py changed, reloading.
+INFO 2025-12-28 06:20:58,220 autoreload 3153 138249096421504 Watching for file changes with StatReloader
+INFO 2025-12-28 06:21:02,832 log 3153 138249036129984 "GET / HTTP/1.1" 200 6422
+INFO 2025-12-28 06:21:03,757 log 3153 138249036129984 "GET /sales/today/ HTTP/1.1" 200 4995
+INFO 2025-12-28 06:21:04,952 log 3153 138249036129984 "GET / HTTP/1.1" 200 6422
+INFO 2025-12-28 06:21:05,527 log 3153 138249036129984 "GET /inventory/ HTTP/1.1" 200 1745
+INFO 2025-12-28 06:21:06,002 log 3153 138249036129984 "GET /inventory/split/ HTTP/1.1" 200 9498
+INFO 2025-12-28 06:21:12,450 log 3153 138249036129984 "GET /inventory/split/?perfume=2&brand=&perfume_name=&date_from=&date_to=&ml_min=&ml_max=&bottle_type= HTTP/1.1" 200 6971
+INFO 2025-12-28 06:21:29,256 log 3153 138249036129984 "GET / HTTP/1.1" 200 6422
+INFO 2025-12-28 06:21:30,253 log 3153 138249036129984 "GET /sales/new/ HTTP/1.1" 200 19140
+INFO 2025-12-28 06:23:38,025 log 3153 138249036129984 "GET /sales/new/ HTTP/1.1" 200 25900
+INFO 2025-12-28 06:24:44,743 log 3153 138249036129984 "GET /admin/ HTTP/1.1" 302 0
+INFO 2025-12-28 06:24:44,761 log 3153 138249036129984 "GET /admin/login/?next=/admin/ HTTP/1.1" 200 3160
+INFO 2025-12-28 06:24:44,836 log 3153 138248932280000 "GET /static/vendor/adminlte/img/AdminLTELogo.png HTTP/1.1" 200 2637
+INFO 2025-12-28 06:24:44,836 log 3153 138248949065408 "GET /static/jazzmin/css/main.css HTTP/1.1" 200 16969
+INFO 2025-12-28 06:24:44,840 log 3153 138248940672704 "GET /static/vendor/bootstrap/js/bootstrap.min.js HTTP/1.1" 200 62440
+INFO 2025-12-28 06:24:44,842 log 3153 138249036129984 "GET /static/vendor/fontawesome-free/css/all.min.css HTTP/1.1" 200 103009
+INFO 2025-12-28 06:24:44,844 log 3153 138248932280000 "GET /static/vendor/adminlte/js/adminlte.min.js HTTP/1.1" 200 44244
+INFO 2025-12-28 06:24:44,846 log 3153 138248923887296 "GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 200 285314
+INFO 2025-12-28 06:24:44,849 log 3153 138248957458112 "GET /static/vendor/adminlte/css/adminlte.min.css HTTP/1.1" 200 1382975
+INFO 2025-12-28 06:24:45,060 log 3153 138248932280000 "GET /static/vendor/fontawesome-free/webfonts/fa-solid-900.woff2 HTTP/1.1" 200 156400
+INFO 2025-12-28 06:24:48,194 log 3153 138248932280000 "POST /admin/login/?next=/admin/ HTTP/1.1" 302 0
+INFO 2025-12-28 06:24:48,229 log 3153 138248932280000 "GET /admin/ HTTP/1.1" 200 45533
+INFO 2025-12-28 06:24:48,296 log 3153 138248932280000 "GET /static/jazzmin/js/main.js HTTP/1.1" 200 2391
+INFO 2025-12-28 06:24:48,325 log 3153 138249036129984 "GET /static/vendor/fontawesome-free/webfonts/fa-regular-400.woff2 HTTP/1.1" 200 25392
+INFO 2025-12-28 06:24:53,733 log 3153 138248932280000 "GET /admin/sales/paymentmethod/ HTTP/1.1" 200 21137
+INFO 2025-12-28 06:24:53,763 log 3153 138248932280000 "GET /static/vendor/select2/css/select2.min.css HTTP/1.1" 200 16264
+INFO 2025-12-28 06:24:53,765 log 3153 138248957458112 "GET /static/admin/js/jquery.init.js HTTP/1.1" 200 347
+INFO 2025-12-28 06:24:53,768 log 3153 138248923887296 "GET /static/admin/js/core.js HTTP/1.1" 200 6208
+INFO 2025-12-28 06:24:53,768 log 3153 138248949065408 "GET /static/admin/js/actions.js HTTP/1.1" 200 8076
+INFO 2025-12-28 06:24:53,773 log 3153 138248957458112 "GET /static/admin/js/urlify.js HTTP/1.1" 200 7887
+INFO 2025-12-28 06:24:53,773 log 3153 138248940672704 "GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 200 9777
+INFO 2025-12-28 06:24:53,777 log 3153 138248949065408 "GET /static/admin/js/prepopulate.js HTTP/1.1" 200 1531
+INFO 2025-12-28 06:24:53,780 log 3153 138248923887296 "GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 200 325171
+INFO 2025-12-28 06:24:53,783 log 3153 138248940672704 "GET /static/vendor/select2/js/select2.min.js HTTP/1.1" 200 73170
+INFO 2025-12-28 06:24:53,796 log 3153 138249036129984 "GET /admin/jsi18n/ HTTP/1.1" 200 16820
+INFO 2025-12-28 06:24:53,842 log 3153 138248949065408 "GET /static/jazzmin/js/change_list.js HTTP/1.1" 200 2252
+INFO 2025-12-28 06:24:55,247 log 3153 138248949065408 "GET /admin/sales/paymentmethod/add/ HTTP/1.1" 200 24078
+INFO 2025-12-28 06:24:55,269 log 3153 138248932280000 "GET /static/admin/js/prepopulate_init.js HTTP/1.1" 200 586
+INFO 2025-12-28 06:24:55,270 log 3153 138248957458112 "GET /static/admin/js/change_form.js HTTP/1.1" 200 606
+INFO 2025-12-28 06:24:55,274 log 3153 138248957458112 "GET /static/jazzmin/js/change_form.js HTTP/1.1" 200 6052
+INFO 2025-12-28 06:24:55,290 log 3153 138248949065408 "GET /admin/jsi18n/ HTTP/1.1" 200 16820
+INFO 2025-12-28 06:25:00,245 log 3153 138248949065408 "POST /admin/sales/paymentmethod/add/ HTTP/1.1" 302 0
+INFO 2025-12-28 06:25:00,272 log 3153 138248949065408 "GET /admin/sales/paymentmethod/ HTTP/1.1" 200 24413
+INFO 2025-12-28 06:25:00,351 log 3153 138248949065408 "GET /admin/jsi18n/ HTTP/1.1" 200 16820
+INFO 2025-12-28 06:25:03,976 log 3153 138248949065408 "GET / HTTP/1.1" 200 6422
+INFO 2025-12-28 06:25:05,037 log 3153 138248949065408 "GET /sales/new/ HTTP/1.1" 200 25979
+INFO 2025-12-28 06:25:28,363 log 3153 138248949065408 "POST /sales/new/ HTTP/1.1" 302 0
+INFO 2025-12-28 06:25:28,383 log 3153 138248949065408 "GET /sales/today/ HTTP/1.1" 200 7855
+INFO 2025-12-28 06:25:53,419 log 3153 138248949065408 "GET / HTTP/1.1" 200 6422
+INFO 2025-12-28 06:25:54,247 log 3153 138248949065408 "GET /inventory/ HTTP/1.1" 200 1745
+INFO 2025-12-28 06:25:54,908 log 3153 138248949065408 "GET /inventory/perfume/ HTTP/1.1" 200 5423
+INFO 2025-12-28 06:25:56,875 log 3153 138248949065408 "GET / HTTP/1.1" 200 6422
+INFO 2025-12-28 06:25:57,782 log 3153 138248949065408 "GET /sales/today/ HTTP/1.1" 200 7855
+INFO 2025-12-28 06:26:41,973 autoreload 3153 138249096421504 /home/aman/noa_beuty/sales/views.py changed, reloading.
+INFO 2025-12-28 06:26:42,439 autoreload 3591 132250127970432 Watching for file changes with StatReloader
+INFO 2025-12-28 06:26:47,657 autoreload 3591 132250127970432 /home/aman/noa_beuty/sales/views.py changed, reloading.
+INFO 2025-12-28 06:26:47,868 autoreload 3633 131321237975168 Watching for file changes with StatReloader
+INFO 2025-12-28 06:26:56,378 log 3633 131321108100800 "GET /sales/today/ HTTP/1.1" 200 8240

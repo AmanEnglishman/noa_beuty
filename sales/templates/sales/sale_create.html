@@ -4,27 +4,252 @@
 
 {% block extra_head %}
     <style>
-        h1 { margin-bottom: 16px; }
-        .basket-row { background: #f7fbfc; border:1px solid #def; border-radius: 8px; padding: 16px 14px 10px 14px; margin-bottom: 15px; box-shadow:0 2px 7px #e9eff2; position:relative; }
-        .pos-number { position:absolute; left:-14px; top:12px; color:#888; font-weight:bold; font-size:1.12em; }
-        .fields-grid { display: grid; grid-template-columns: 138px 1fr 1fr; gap: 12px; align-items: end; }
-        .row-label { min-width:117px;font-weight: 500; margin-top:8px; }
-        select, input[type=number], input[type=text] { font-size: 1.03em; padding: 7px 8px; border-radius:4px; border:1px solid #bbc; width:98%; background:#fff; margin-bottom:2px; }
-        .field-group {margin-bottom:7px;}
-        .remove-btn { background: #e54234; color: #fff; border:none; font-size:1.22em; padding:3px 13px; border-radius: 5px; cursor:pointer; margin-left:12px; float:right; }
-        .add-btn { background: #2698ed; color:#fff; font-size:1.07em; border-radius:6px; border:none; padding:10px 19px; margin-top:14px; cursor:pointer; font-weight:600;}
-        .summary { font-size:1.16em; margin:22px 0 10px; font-weight:bold; color:#242e5d; }
-        .sumline { margin-top:2px; }
-        .error { color:#c10404; margin-bottom:13px; }
-        button[type=submit] { font-size:1.12em; padding: 11px 32px; background: #28b027; color: #fff; border: none; border-radius:6px; margin-top: 18px; font-weight:600; }
-        .note { color: #555; font-size: 0.97em; margin-top: 28px;}
-        a { color: #296080; }
-        .summary-total { color: #28882a; font-weight:bold; font-size: 1.18em; }
-        .summary-discount, .sumline-discount { color:#d72233; font-weight:700; }
-        .ost-label { font-size:.93em; color:#338; margin-left:6px; }
-        .tara-price { font-size:.98em; color:#2b4; margin-left:0.7em; font-weight:500; } .tara-free { color:#888; }
-        .product-search-input { font-size: 0.9em; padding: 4px 8px; border-radius: 4px; border: 1px solid #ccd; width: 98%; margin-bottom: 4px; }
-        .product-search-input::placeholder { color: #999; }
+        h1 { margin-bottom: 20px; }
+        
+        .basket-row { 
+            background: #ffffff; 
+            border: 1px solid #e0e0e0; 
+            border-radius: 12px; 
+            padding: 20px; 
+            margin-bottom: 20px; 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08); 
+            position: relative;
+            transition: box-shadow 0.2s;
+        }
+        .basket-row:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+        }
+        
+        .pos-number { 
+            position: absolute; 
+            left: -12px; 
+            top: 16px; 
+            background: #4a90e2; 
+            color: #fff; 
+            font-weight: bold; 
+            font-size: 0.9em; 
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .fields-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+            gap: 16px; 
+            align-items: start;
+        }
+        
+        .field-group {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 0;
+        }
+        
+        .row-label { 
+            font-weight: 600; 
+            margin-bottom: 6px; 
+            font-size: 0.9em;
+            color: #333;
+        }
+        
+        select, input[type=number], input[type=text] { 
+            font-size: 0.95em; 
+            padding: 10px 12px; 
+            border-radius: 6px; 
+            border: 1px solid #d0d0d0; 
+            width: 100%; 
+            background: #fff; 
+            transition: border-color 0.2s, box-shadow 0.2s;
+            box-sizing: border-box;
+        }
+        
+        select:focus, input[type=number]:focus, input[type=text]:focus {
+            outline: none;
+            border-color: #4a90e2;
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+        }
+        
+        select:read-only, input[readonly] {
+            background-color: #f5f5f5;
+            cursor: not-allowed;
+        }
+        
+        .remove-btn { 
+            background: #e74c3c; 
+            color: #fff; 
+            border: none; 
+            font-size: 1.1em; 
+            padding: 8px 16px; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            transition: background 0.2s;
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+        .remove-btn:hover {
+            background: #c0392b;
+        }
+        
+        .add-btn { 
+            background: #3498db; 
+            color: #fff; 
+            font-size: 1em; 
+            border-radius: 8px; 
+            border: none; 
+            padding: 12px 24px; 
+            margin: 20px 0; 
+            cursor: pointer; 
+            font-weight: 600;
+            transition: background 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .add-btn:hover {
+            background: #2980b9;
+        }
+        
+        .summary-section {
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 24px 0;
+        }
+        
+        .summary { 
+            font-size: 1.1em; 
+            margin: 0 0 16px 0; 
+            font-weight: 600; 
+            color: #2c3e50; 
+        }
+        
+        .sumline { 
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .sumline:last-child {
+            border-bottom: none;
+            font-weight: 600;
+            font-size: 1.1em;
+            margin-top: 8px;
+            padding-top: 12px;
+            border-top: 2px solid #2c3e50;
+        }
+        
+        .error { 
+            background: #fee;
+            color: #c10404; 
+            padding: 12px 16px;
+            border-radius: 6px;
+            border: 1px solid #fcc;
+            margin-bottom: 20px;
+        }
+        
+        .payment-section {
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 24px 0;
+        }
+        
+        .payment-section .field-group {
+            margin-bottom: 16px;
+        }
+        
+        button[type=submit] { 
+            font-size: 1.1em; 
+            padding: 14px 36px; 
+            background: #27ae60; 
+            color: #fff; 
+            border: none; 
+            border-radius: 8px; 
+            margin-top: 20px; 
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            width: 100%;
+        }
+        button[type=submit]:hover {
+            background: #229954;
+        }
+        
+        .note { 
+            color: #666; 
+            font-size: 0.9em; 
+            margin-top: 20px;
+            padding: 12px;
+            background: #f0f0f0;
+            border-radius: 6px;
+        }
+        
+        a { 
+            color: #3498db; 
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        
+        .summary-total { 
+            color: #27ae60; 
+            font-weight: bold; 
+            font-size: 1.2em; 
+        }
+        
+        .summary-discount, .sumline-discount { 
+            color: #e74c3c; 
+            font-weight: 600; 
+        }
+        
+        .ost-label { 
+            font-size: 0.85em; 
+            color: #666; 
+            margin-top: 4px;
+            font-style: italic;
+        }
+        
+        .tara-price { 
+            font-size: 0.9em; 
+            color: #27ae60; 
+            margin-top: 4px;
+            font-weight: 500;
+        }
+        
+        .tara-free { 
+            color: #888; 
+        }
+        
+        .product-search-input { 
+            font-size: 0.9em; 
+            padding: 8px 10px; 
+            border-radius: 6px; 
+            border: 1px solid #d0d0d0; 
+            width: 100%; 
+            margin-bottom: 6px;
+            box-sizing: border-box;
+        }
+        
+        .product-search-input::placeholder { 
+            color: #999; 
+        }
+        
+        .form-section-title {
+            font-size: 1.1em;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #2c3e50;
+        }
     </style>
 {% endblock %}
 
@@ -56,6 +281,7 @@
              <option value="split">Распив (по мл)</option>
              <option value="full">Флакон полностью</option>
              <option value="cosmetic">Косметика</option>
+             <option value="gift">Подарок</option>
            </select>
          </div>
          <div class='field-group perfume-gr'>
@@ -130,11 +356,20 @@
       let row = sel.closest('.basket-row');
       let type = sel.value;
       row.querySelector('.perfume-gr').style.display = (type !== 'cosmetic') ? '' : 'none';
-      row.querySelector('.cosmetic-gr').style.display = (type === 'cosmetic') ? '' : 'none';
-      row.querySelector('.ml-group').style.display = (type === 'split') ? '' : 'none';
+      row.querySelector('.cosmetic-gr').style.display = (type === 'cosmetic' || type === 'gift') ? '' : 'none';
+      row.querySelector('.ml-group').style.display = (type === 'split' || type === 'gift') ? '' : 'none';
       row.querySelector('.bottle-group').style.display = (type !== 'split') ? '' : 'none';
       row.querySelector('.tara-group').style.display = (type === 'split') ? '' : 'none';
       row.querySelector('.tara-qty-group').style.display = (type === 'split') ? '' : 'none';
+      if (type === 'gift') {
+        row.querySelector('.price').value = 0;
+        row.querySelector('.price').readOnly = true;
+        row.querySelector('.item_discount').value = 0;
+        row.querySelector('.item_discount').readOnly = true;
+      } else {
+        row.querySelector('.price').readOnly = true;
+        row.querySelector('.item_discount').readOnly = false;
+      }
       summaryUpdate();
     }
     function filterPerfumeOptions(input) {
@@ -173,11 +408,15 @@
       } else {
         ostSpan.style.display = 'none';
       }
-      if (perfumeId && type === "split") {
-        row.querySelector('.price').value = productOptions[perfumeId]['price_ml'];
+      if (perfumeId && (type === "split" || type === "gift")) {
+        row.querySelector('.price').value = type === "gift" ? 0 : productOptions[perfumeId]['price_ml'];
       }
-      if (perfumeId && type === "full") {
-        row.querySelector('.price').value = productOptions[perfumeId]['price_bottle'];
+      if (perfumeId && (type === "full" || type === "gift")) {
+        if (type === "gift") {
+          row.querySelector('.price').value = 0;
+        } else {
+          row.querySelector('.price').value = productOptions[perfumeId]['price_bottle'];
+        }
       }
       summaryUpdate();
     }
@@ -229,7 +468,8 @@
         ostSpan.style.display = 'none';
       }
       if (cosmeticId) {
-        row.querySelector('.price').value = cosmeticOptions[cosmeticId]['price'];
+        let type = row.querySelector('.itm-type').value;
+        row.querySelector('.price').value = type === 'gift' ? 0 : cosmeticOptions[cosmeticId]['price'];
       }
       summaryUpdate();
     }
@@ -249,26 +489,54 @@
           }
         }
         let qty = 1;
-        if (type == 'split') qty = +row.querySelector('.ml_qty').value || 0;
-        else if (type == 'cosmetic') qty = +row.querySelector('.bottle_qty').value || 0;
-        else if (type == 'full') qty = +row.querySelector('.bottle_qty').value || 0;
-        let sum = price * qty + tara_sum - item_discount;
-        if (sum < 0) sum = 0;
-        total += sum;
-        discount += item_discount;
-        row.querySelector('.item_discount').style.background = (sum === 0 && (price*qty+tara_sum)>0)?'#ffb5b2':'';
+        if (type == 'split' || type == 'gift') qty = +row.querySelector('.ml_qty').value || 0;
+        else if (type == 'cosmetic' || type == 'gift') qty = +row.querySelector('.bottle_qty').value || 0;
+        else if (type == 'full' || type == 'gift') qty = +row.querySelector('.bottle_qty').value || 0;
+        // Подарочные товары не учитываются в общей сумме
+        let sum = 0;
+        if (type == 'gift') {
+          row.querySelector('.item_discount').value = 0;
+          sum = 0;
+        } else {
+          sum = price * qty + tara_sum - item_discount;
+          if (sum < 0) sum = 0;
+          total += sum;
+          discount += item_discount;
+        }
+        row.querySelector('.item_discount').style.background = (sum === 0 && (price*qty+tara_sum)>0 && type !== 'gift')?'#ffb5b2':'';
       }
-      document.getElementById('summary_total').innerText = total;
-      document.getElementById('summary_discount').innerText = discount;
+      document.getElementById('summary_total').innerText = total.toLocaleString('ru-RU');
+      document.getElementById('summary_discount').innerText = discount.toLocaleString('ru-RU');
+      updateFinalTotal();
     }
     function updatePositionNumbers() {
       let positions = document.querySelectorAll('.basket-row .pos-number');
       let i = 1;
       for (let n of positions) n.innerText = '#' + (i++);
     }
-    window.onload = function(){
-      addRow();
+    function updateFinalTotal() {
+      let saleDiscountInput = document.getElementById('sale_discount');
+      if (!saleDiscountInput) return;
+      
+      let saleDiscountPercent = parseFloat(saleDiscountInput.value) || 0;
+      let itemsTotal = parseFloat(document.getElementById('summary_total').innerText.replace(/\s/g, '').replace(',', '.')) || 0;
+      let itemsDiscount = parseFloat(document.getElementById('summary_discount').innerText.replace(/\s/g, '').replace(',', '.')) || 0;
+      let subtotal = itemsTotal - itemsDiscount;
+      
+      // Скидка на чек применяется как процент от subtotal
+      let saleDiscountAmount = Math.round(subtotal * saleDiscountPercent / 100);
+      let final = Math.max(0, subtotal - saleDiscountAmount);
+      
+      document.getElementById('summary_final').innerText = final.toLocaleString('ru-RU');
     }
+    
+    document.addEventListener('DOMContentLoaded', function() {
+      addRow();
+      let saleDiscountInput = document.getElementById('sale_discount');
+      if (saleDiscountInput) {
+        saleDiscountInput.addEventListener('input', updateFinalTotal);
+      }
+    });
     </script>
 {% endblock %}
 
@@ -278,26 +546,57 @@
 {% endblock %}
 
 {% block content %}
-    <h1>Пробить новый чек</h1>
     {% if error %}<div class="error">{{ error }}</div>{% endif %}
+    
     <form method="post">
         {% csrf_token %}
+        
         <div id="basket"></div>
-        <button type="button" class="add-btn" onclick="addRow()">+ Добавить товар/позицию</button>
-        <label class="row-label">Тип оплаты</label>
+        
+        <button type="button" class="add-btn" onclick="addRow()">
+            <span>+</span>
+            <span>Добавить товар/позицию</span>
+        </button>
+        
+        <div class="summary-section">
+            <div class="form-section-title">Итоги чека</div>
+            <div class="sumline">
+                <span>Сумма товаров:</span>
+                <span id="summary_total">0</span> сом
+            </div>
+            <div class="sumline sumline-discount">
+                <span>Скидка на товары:</span>
+                <span id="summary_discount">0</span> сом
+            </div>
+            <div class="sumline">
+                <span>Итого к оплате:</span>
+                <span class="summary-total" id="summary_final">0</span> сом
+            </div>
         </div>
-        <select name="payment_method" required>
-          <option value="">— выберите —</option>
-          {% for method in payment_methods %}
-              <option value="{{ method.id }}">{{ method.name }}</option>
-          {% endfor %}
-      </select>
-        <div class="field-group">
-          <label for="sale_discount">Скидка на чек (дополнительно, сом)</label>
-          <input type="number" min="0" value="0" name="sale_discount" id="sale_discount"/>
+        
+        <div class="payment-section">
+            <div class="form-section-title">Оплата</div>
+            <div class="field-group">
+                <label class="row-label" for="payment_method">Способ оплаты *</label>
+                <select name="payment_method" id="payment_method" required>
+                    <option value="">— Выберите способ оплаты —</option>
+                    {% for method in payment_methods %}
+                        <option value="{{ method.id }}">{{ method.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="field-group">
+                <label class="row-label" for="sale_discount">Дополнительная скидка на чек (%)</label>
+                <input type="number" min="0" max="100" value="0" name="sale_discount" id="sale_discount" placeholder="0" step="1"/>
+            </div>
         </div>
-        <button type="submit">Пробить и сохранить чек</button>
+        
+        <button type="submit">💾 Сохранить и пробить чек</button>
     </form>
-    <p class="note">Можно добавить несколько товаров — чек с множеством позиций. Итоги и скидки считаются автоматически. <a href="/sales/today/">К списку продаж</a></p>
+    
+    <p class="note">
+        💡 Можно добавить несколько товаров — чек с множеством позиций. Итоги и скидки считаются автоматически. 
+        <a href="/sales/today/">← Вернуться к списку продаж</a>
+    </p>
 {% endblock %}
 

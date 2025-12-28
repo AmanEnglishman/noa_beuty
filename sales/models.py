@@ -45,6 +45,7 @@ class SaleItem(models.Model):
         ('full', 'Флакон полностью'),
         ('split', 'Распив'),
         ('cosmetic', 'Косметика'),
+        ('gift', 'Подарок'),
     ]
     
     sale = models.ForeignKey(Sale, on_delete=models.CASCADE, related_name="items", verbose_name="Чек")
@@ -68,6 +69,16 @@ class SaleItem(models.Model):
             return f"{self.perfume} x {self.bottles_count}"
         elif self.sale_type == 'split':
             return f"{self.perfume} x {self.ml} ml"
+        elif self.sale_type == 'gift':
+            if self.perfume:
+                if self.bottles_count > 0:
+                    return f"{self.perfume} x {self.bottles_count} (Подарок)"
+                else:
+                    return f"{self.perfume} x {self.ml} ml (Подарок)"
+            elif self.cosmetic:
+                return f"{self.cosmetic} x {self.bottle_count} (Подарок)"
+            else:
+                return "Подарок"
         else:
             return f"{self.cosmetic} x {self.bottle_count}"
 

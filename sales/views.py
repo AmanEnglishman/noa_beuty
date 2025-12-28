@@ -36,12 +36,16 @@ def sales_today(request):
         .order_by("-sale_date")
     )
 
+    # Рассчитываем общую сумму продаж за сегодня
+    total_today = sum(sale.total for sale in sales)
+
     return render(
         request,
         "sales/sales_today.html",
         {
             "sales": sales,
             "today": today,
+            "total_today": total_today,
         }
     )
 
@@ -101,23 +105,40 @@ def sale_create(request):
                     # ---- QTY ----
                     if sale_type == "split":
                         qty = ml
-                    elif sale_type in ("full", "cosmetic"):
+                    elif sale_type in ("full", "cosmetic", "gift"):
                         qty = bottles_count
                     else:
                         qty = 1
 
-                    base_total = price * qty
-                    discount_sum = round(base_total * discount_percent / 100)
-                    line_total = max(0, base_total - discount_sum)
+                    # Для подарочных товаров стоимость всегда 0
+                    if sale_type == "gift":
+                        line_total = 0
+                    else:
+                        base_total = price * qty
+                        discount_sum = round(base_total * discount_percent / 100)
+                        line_total = max(0, base_total - discount_sum)
+                        items_total += line_total
 
-                    items_total += line_total
-
-                    # ---- ПЛАТНАЯ ТАРА ----
+                    # ---- ПЛАТНАЯ ТАРА (только для распива, не для подарков) ----
                     if sale_type == "split" and bottle_type_id and atomizer_count > 0:
                         bottle_type = BottleType.objects.filter(id=bottle_type_id).first()
                         if bottle_type and bottle_type.is_paid:
                             items_total += bottle_type.price * atomizer_count
 
+                    # Определяем bottle_count в зависимости от типа продажи
+                    if sale_type == "split":
+                        item_bottle_count = atomizer_count
+                    elif sale_type == "gift":
+                        # Для подарочных товаров: если распив - atomizer_count, если косметика - bottles_count, если полный флакон - 0
+                        if cosmetic_id:
+                            item_bottle_count = bottles_count
+                        elif ml > 0:
+                            item_bottle_count = atomizer_count
+                        else:
+                            item_bottle_count = 0
+                    else:
+                        item_bottle_count = bottles_count
+                    
                     items_data.append({
                         "sale_type": sale_type,
                         "perfume_id": perfume_id,
@@ -125,7 +146,7 @@ def sale_create(request):
                         "ml": ml,
                         "bottles_count": bottles_count,
                         "bottle_type_id": bottle_type_id,
-                        "bottle_count": atomizer_count if sale_type == "split" else bottles_count,
+                        "bottle_count": item_bottle_count,
                         "unit_price": price,
                         "discount_percent": discount_percent,
                         "line_total": line_total,
