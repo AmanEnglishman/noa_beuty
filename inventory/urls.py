@@ -3,7 +3,8 @@ from .views import (
     PerfumeStockListView,
     BottleStockListView,
     CosmeticStockListView,
-    inventory_hub
+    inventory_hub,
+    SplitSalesListView,
 )
 
 urlpatterns = [
@@ -11,4 +12,5 @@ urlpatterns = [
     path("perfume/", PerfumeStockListView.as_view(), name="perfume-stock"),
     path("bottle/", BottleStockListView.as_view(), name="bottle-stock"),
     path("cosmetic/", CosmeticStockListView.as_view(), name="cosmetic-stock"),
+    path("split/", SplitSalesListView, name="split-sales"),
 ]

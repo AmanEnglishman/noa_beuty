@@ -1,30 +1,39 @@
 from django.views.generic import TemplateView, CreateView, ListView, UpdateView, DeleteView
 from django.utils.timezone import now
-from django.contrib.admin.views.decorators import staff_member_required
-from django.utils.decorators import method_decorator
 from django.contrib import messages
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
+from django.views import View
 
 from sales.models import Sale, SaleItem, Expense, Income
 
+REPORT_ACCESS_PASSWORD = "bishkek"
 
-@method_decorator(staff_member_required, name='dispatch')
-class MonthlyFinanceReportView(TemplateView):
+class MonthlyFinanceReportView(View):
     template_name = "finance/monthly_report.html"
+    password_template = "finance/monthly_report_password.html"
+    
+    def get(self, request, *args, **kwargs):
+        if request.session.get("finance_report_auth") == True:
+            return self.render_report(request)
+        return render(request, self.password_template, {"error": None})
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+    def post(self, request, *args, **kwargs):
+        password = request.POST.get("password")
+        if password == REPORT_ACCESS_PASSWORD:
+            request.session["finance_report_auth"] = True
+            return self.render_report(request)
+        return render(request, self.password_template, {"error": "Неверный пароль!"})
 
+    def render_report(self, request):
         today = now()
-        month = int(self.request.GET.get("month", today.month))
-        year = int(self.request.GET.get("year", today.year))
+        month = int(request.GET.get("month", today.month))
+        year = int(request.GET.get("year", today.year))
 
         sales = Sale.objects.filter(
             sale_date__year=year,
             sale_date__month=month
         )
-
         total_sales = sum(s.total for s in sales)
 
         extra_incomes = Income.objects.filter(
@@ -41,7 +50,7 @@ class MonthlyFinanceReportView(TemplateView):
 
         profit = total_sales + total_extra_income - total_expenses
 
-        context.update({
+        context = {
             "year": year,
             "month": month,
             "sales": sales,
@@ -51,25 +60,21 @@ class MonthlyFinanceReportView(TemplateView):
             "total_extra_income": total_extra_income,
             "total_expenses": total_expenses,
             "profit": profit,
-        })
+        }
+        return render(request, self.template_name, context)
 
-        return context
 
-
-@method_decorator(staff_member_required, name='dispatch')
 class ExpenseListView(ListView):
     model = Expense
     template_name = "finance/expense_list.html"
     context_object_name = "expenses"
     ordering = ["-date", "-id"]
-    
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['total_amount'] = sum(expense.amount for expense in context['expenses'])
         return context
 
-
-@method_decorator(staff_member_required, name='dispatch')
 class ExpenseCreateView(CreateView):
     model = Expense
     template_name = "finance/expense_form.html"
@@ -80,8 +85,6 @@ class ExpenseCreateView(CreateView):
         messages.success(self.request, "Расход успешно добавлен")
         return super().form_valid(form)
 
-
-@method_decorator(staff_member_required, name='dispatch')
 class ExpenseUpdateView(UpdateView):
     model = Expense
     template_name = "finance/expense_form.html"
@@ -92,8 +95,6 @@ class ExpenseUpdateView(UpdateView):
         messages.success(self.request, "Расход успешно обновлен")
         return super().form_valid(form)
 
-
-@method_decorator(staff_member_required, name='dispatch')
 class ExpenseDeleteView(DeleteView):
     model = Expense
     template_name = "finance/expense_confirm_delete.html"
@@ -103,21 +104,17 @@ class ExpenseDeleteView(DeleteView):
         messages.success(self.request, "Расход успешно удален")
         return super().delete(request, *args, **kwargs)
 
-
-@method_decorator(staff_member_required, name='dispatch')
 class IncomeListView(ListView):
     model = Income
     template_name = "finance/income_list.html"
     context_object_name = "incomes"
     ordering = ["-date", "-id"]
-    
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['total_amount'] = sum(income.amount for income in context['incomes'])
         return context
 
-
-@method_decorator(staff_member_required, name='dispatch')
 class IncomeCreateView(CreateView):
     model = Income
     template_name = "finance/income_form.html"
@@ -128,8 +125,6 @@ class IncomeCreateView(CreateView):
         messages.success(self.request, "Доход успешно добавлен")
         return super().form_valid(form)
 
-
-@method_decorator(staff_member_required, name='dispatch')
 class IncomeUpdateView(UpdateView):
     model = Income
     template_name = "finance/income_form.html"
@@ -140,8 +135,6 @@ class IncomeUpdateView(UpdateView):
         messages.success(self.request, "Доход успешно обновлен")
         return super().form_valid(form)
 
-
-@method_decorator(staff_member_required, name='dispatch')
 class IncomeDeleteView(DeleteView):
     model = Income
     template_name = "finance/income_confirm_delete.html"
