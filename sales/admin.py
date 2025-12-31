@@ -1,7 +1,6 @@
 from django.contrib import admin
 from .models import Sale, SaleItem, Expense, Income, PaymentMethod
 
-
 class SaleItemInline(admin.TabularInline):
     model = SaleItem
     extra = 1
@@ -17,11 +16,14 @@ class SaleAdmin(admin.ModelAdmin):
 @admin.register(SaleItem)
 class SaleItemAdmin(admin.ModelAdmin):
     list_display = (
-        "id", "sale", "sale_type", "perfume", "cosmetic",
-        "bottles_count", "ml", "bottle_type",
-        "unit_price", "line_total", "discount_percent"
+        "id",
+        "sale_type",
+        "bottles_count",
+        "ml",
+        "unit_price",
+        "line_total",
+        "discount_percent",
     )
-    list_filter = ("sale_type",)
 
 
 @admin.register(Expense)
