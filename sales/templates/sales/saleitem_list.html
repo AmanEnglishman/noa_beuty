@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Позиции всех чеков — NOA Beauty{% endblock %}
+
+{% block page_header %}
+<h1 class="h4 mb-2">Позиции во всех чеках</h1>
+<p class="text-muted mb-0">Просмотр всех строк проданных товаров, косметики и распивов</p>
+{% endblock %}
+
+{% block content %}
+
+<div class="card border-0 shadow-sm mt-3">
+    <div class="card-body pt-4">
+        <div class="table-responsive">
+            <table class="table table-sm align-middle">
+                <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Чек</th>
+                    <th scope="col">Тип</th>
+                    <th scope="col">Товар</th>
+                    <th scope="col">Флаконы</th>
+                    <th scope="col">Мл</th>
+                    <th scope="col">Тара</th>
+                    <th scope="col">Цена за ед.</th>
+                    <th scope="col">Итого</th>
+                    <th scope="col">Скидка (%)</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for item in saleitems %}
+                <tr>
+                    <td>{{ item.id }}</td>
+                    <td class="text-primary"><a href="/sales/today/#sale-{{ item.sale.id }}">#{{ item.sale.id }}</a></td>
+                    <td>{{ item.get_sale_type_display }}</td>
+                    <td>
+                        {% if item.perfume %}<span class="text-success">{{ item.perfume }}</span>{% endif %}
+                        {% if item.cosmetic %}<span class="text-info">{{ item.cosmetic }}</span>{% endif %}
+                    </td>
+                    <td>{% if item.bottles_count %}{{ item.bottles_count }}{% endif %}</td>
+                    <td>{% if item.ml %}{{ item.ml|floatformat:2 }}{% endif %}</td>
+                    <td>{% if item.bottle_type %}{{ item.bottle_type.name }}{% endif %}</td>
+                    <td>{{ item.unit_price }}</td>
+                    <td><strong>{{ item.line_total }}</strong></td>
+                    <td>{% if item.discount_percent %}{{ item.discount_percent }}{% else %}0{% endif %}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="10" class="text-center text-muted">Позиции чеков отсутствуют</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

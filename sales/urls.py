@@ -6,6 +6,8 @@ urlpatterns = [
     path("today/", views.sales_today, name="sales_today"),
     path("new/", views.sale_create, name="sale_create"),
 
+    path("positions/", views.saleitem_list, name="saleitem_list"), # Новая страница
+
     # кнопка "Печать" → кладёт в очередь
     path(
         "print/<int:sale_id>/",
@@ -16,7 +18,5 @@ urlpatterns = [
     # API для print_agent
     path("print/next/", views.get_next_print),
     path("print/done/<int:sale_id>/", views.mark_printed),
-    path("api/print/<int:sale_id>/",views.receipt_png, name="receipt_png"
-)
-
+    path("api/print/<int:sale_id>/",views.receipt_png, name="receipt_png"),
 ]

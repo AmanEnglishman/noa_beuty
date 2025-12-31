@@ -531,3 +531,143 @@ INFO 2025-12-28 06:37:50,513 autoreload 5018 140595811192960 /home/aman/noa_beut
 INFO 2025-12-28 06:37:50,782 autoreload 5041 128768475058304 Watching for file changes with StatReloader
 INFO 2025-12-28 06:37:58,987 autoreload 5041 128768475058304 /home/aman/noa_beuty/sales/models.py changed, reloading.
 INFO 2025-12-28 06:37:59,212 autoreload 5108 136224484171904 Watching for file changes with StatReloader
+INFO 2025-12-29 16:48:32,066 autoreload 959 135836382285952 Watching for file changes with StatReloader
+INFO 2025-12-29 16:48:37,128 log 959 135836253288128 "GET / HTTP/1.1" 200 6436
+WARNING 2025-12-29 16:48:37,543 log 959 135836253288128 Not Found: /favicon.ico
+WARNING 2025-12-29 16:48:37,543 log 959 135836253288128 "GET /favicon.ico HTTP/1.1" 404 2907
+INFO 2025-12-29 16:48:46,962 log 959 135836253288128 "GET /admin/ HTTP/1.1" 302 0
+INFO 2025-12-29 16:48:46,975 log 959 135836253288128 "GET /admin/login/?next=/admin/ HTTP/1.1" 200 3160
+INFO 2025-12-29 16:48:47,057 log 959 135836234405568 "GET /static/jazzmin/css/main.css HTTP/1.1" 200 16969
+INFO 2025-12-29 16:48:47,058 log 959 135836209227456 "GET /static/vendor/adminlte/img/AdminLTELogo.png HTTP/1.1" 304 0
+INFO 2025-12-29 16:48:47,061 log 959 135836217620160 "GET /static/vendor/bootstrap/js/bootstrap.min.js HTTP/1.1" 200 62440
+INFO 2025-12-29 16:48:47,062 log 959 135836253288128 "GET /static/vendor/fontawesome-free/css/all.min.css HTTP/1.1" 200 103009
+INFO 2025-12-29 16:48:47,063 log 959 135836226012864 "GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 200 285314
+INFO 2025-12-29 16:48:47,067 log 959 135836234405568 "GET /static/vendor/adminlte/js/adminlte.min.js HTTP/1.1" 200 44244
+INFO 2025-12-29 16:48:47,071 log 959 135836244895424 "GET /static/vendor/adminlte/css/adminlte.min.css HTTP/1.1" 200 1382975
+INFO 2025-12-29 16:48:47,127 log 959 135836234405568 "GET /static/vendor/fontawesome-free/webfonts/fa-solid-900.woff2 HTTP/1.1" 200 156400
+INFO 2025-12-29 16:48:51,772 log 959 135836234405568 "POST /admin/login/?next=/admin/ HTTP/1.1" 302 0
+INFO 2025-12-29 16:48:51,817 log 959 135836234405568 "GET /admin/ HTTP/1.1" 200 45508
+INFO 2025-12-29 16:48:51,878 log 959 135836234405568 "GET /static/jazzmin/js/main.js HTTP/1.1" 200 2391
+INFO 2025-12-29 16:48:51,907 log 959 135836226012864 "GET /static/vendor/fontawesome-free/webfonts/fa-regular-400.woff2 HTTP/1.1" 200 25392
+INFO 2025-12-29 16:48:54,635 log 959 135836234405568 "GET /admin/sales/sale/ HTTP/1.1" 200 33555
+INFO 2025-12-29 16:48:54,656 log 959 135836234405568 "GET /static/vendor/select2/css/select2.min.css HTTP/1.1" 200 16264
+INFO 2025-12-29 16:48:54,657 log 959 135836217620160 "GET /static/admin/js/actions.js HTTP/1.1" 200 8076
+INFO 2025-12-29 16:48:54,657 log 959 135836226012864 "GET /static/admin/js/jquery.init.js HTTP/1.1" 200 347
+INFO 2025-12-29 16:48:54,658 log 959 135836244895424 "GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 200 9777
+INFO 2025-12-29 16:48:54,658 log 959 135836253288128 "GET /static/admin/js/core.js HTTP/1.1" 200 6208
+INFO 2025-12-29 16:48:54,663 log 959 135836209227456 "GET /static/admin/js/urlify.js HTTP/1.1" 200 7887
+INFO 2025-12-29 16:48:54,666 log 959 135836226012864 "GET /static/admin/js/prepopulate.js HTTP/1.1" 200 1531
+INFO 2025-12-29 16:48:54,670 log 959 135836209227456 "GET /static/jazzmin/js/change_list.js HTTP/1.1" 200 2252
+INFO 2025-12-29 16:48:54,671 log 959 135836253288128 "GET /static/vendor/select2/js/select2.min.js HTTP/1.1" 200 73170
+INFO 2025-12-29 16:48:54,674 log 959 135836217620160 "GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 200 325171
+INFO 2025-12-29 16:48:54,686 log 959 135836244895424 "GET /admin/jsi18n/ HTTP/1.1" 200 16820
+INFO 2025-12-29 16:50:20,955 log 959 135836244895424 "GET /admin/sales/saleitem/ HTTP/1.1" 200 41233
+INFO 2025-12-29 16:50:20,990 log 959 135836244895424 "GET /admin/jsi18n/ HTTP/1.1" 200 16820
+INFO 2025-12-29 16:50:24,946 log 959 135836244895424 "GET /admin/sales/saleitem/add/ HTTP/1.1" 200 39178
+INFO 2025-12-29 16:50:24,966 log 959 135836209227456 "GET /static/admin/js/prepopulate_init.js HTTP/1.1" 200 586
+INFO 2025-12-29 16:50:24,967 log 959 135836253288128 "GET /static/admin/js/change_form.js HTTP/1.1" 200 606
+INFO 2025-12-29 16:50:24,968 log 959 135836217620160 "GET /static/admin/img/icon-changelink.svg HTTP/1.1" 200 978
+INFO 2025-12-29 16:50:24,971 log 959 135836253288128 "GET /static/jazzmin/js/change_form.js HTTP/1.1" 200 6052
+INFO 2025-12-29 16:50:24,984 log 959 135836244895424 "GET /admin/jsi18n/ HTTP/1.1" 200 16820
+INFO 2025-12-29 16:50:25,040 log 959 135836244895424 "GET /static/admin/img/icon-addlink.svg HTTP/1.1" 200 593
+INFO 2025-12-29 16:50:25,040 log 959 135836253288128 "GET /static/admin/img/icon-viewlink.svg HTTP/1.1" 200 928
+INFO 2025-12-29 16:50:25,045 log 959 135836217620160 "GET /static/admin/img/icon-deletelink.svg HTTP/1.1" 200 689
+INFO 2025-12-29 16:50:40,114 log 959 135836244895424 "GET /admin/sales/expense/ HTTP/1.1" 200 21445
+INFO 2025-12-29 16:50:40,148 log 959 135836244895424 "GET /admin/jsi18n/ HTTP/1.1" 200 16820
+INFO 2025-12-29 21:00:04,584 autoreload 933 124614631604352 Watching for file changes with StatReloader
+INFO 2025-12-29 21:00:13,116 log 933 124614504113856 "GET / HTTP/1.1" 200 6436
+INFO 2025-12-29 21:00:15,534 log 933 124614504113856 "GET /admin/ HTTP/1.1" 200 45508
+INFO 2025-12-29 21:00:15,552 log 933 124614504113856 "GET /static/vendor/fontawesome-free/css/all.min.css HTTP/1.1" 304 0
+INFO 2025-12-29 21:00:15,553 log 933 124614495721152 "GET /static/vendor/adminlte/css/adminlte.min.css HTTP/1.1" 304 0
+INFO 2025-12-29 21:00:15,555 log 933 124614485231296 "GET /static/jazzmin/css/main.css HTTP/1.1" 304 0
+INFO 2025-12-29 21:00:15,558 log 933 124614476838592 "GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 304 0
+INFO 2025-12-29 21:00:15,558 log 933 124614485231296 "GET /static/vendor/adminlte/js/adminlte.min.js HTTP/1.1" 304 0
+INFO 2025-12-29 21:00:15,558 log 933 124614460053184 "GET /static/vendor/bootstrap/js/bootstrap.min.js HTTP/1.1" 304 0
+INFO 2025-12-29 21:00:15,558 log 933 124614468445888 "GET /static/vendor/adminlte/img/AdminLTELogo.png HTTP/1.1" 304 0
+INFO 2025-12-29 21:00:15,562 log 933 124614460053184 "GET /static/jazzmin/js/main.js HTTP/1.1" 304 0
+INFO 2025-12-29 21:00:15,665 log 933 124614485231296 "GET /static/vendor/fontawesome-free/webfonts/fa-regular-400.woff2 HTTP/1.1" 304 0
+INFO 2025-12-29 21:00:15,665 log 933 124614460053184 "GET /static/vendor/fontawesome-free/webfonts/fa-solid-900.woff2 HTTP/1.1" 304 0
+INFO 2025-12-29 21:00:17,273 log 933 124614460053184 "GET /admin/sales/saleitem/ HTTP/1.1" 200 41233
+INFO 2025-12-29 21:00:17,294 log 933 124614460053184 "GET /static/vendor/select2/css/select2.min.css HTTP/1.1" 304 0
+INFO 2025-12-29 21:00:17,296 log 933 124614495721152 "GET /static/admin/js/actions.js HTTP/1.1" 304 0
+INFO 2025-12-29 21:00:17,296 log 933 124614476838592 "GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 304 0
+INFO 2025-12-29 21:00:17,296 log 933 124614485231296 "GET /static/admin/js/core.js HTTP/1.1" 304 0
+INFO 2025-12-29 21:00:17,296 log 933 124614468445888 "GET /static/admin/js/jquery.init.js HTTP/1.1" 304 0
+INFO 2025-12-29 21:00:17,300 log 933 124614495721152 "GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 304 0
+INFO 2025-12-29 21:00:17,300 log 933 124614476838592 "GET /static/admin/js/prepopulate.js HTTP/1.1" 304 0
+INFO 2025-12-29 21:00:17,302 log 933 124614485231296 "GET /static/admin/js/urlify.js HTTP/1.1" 304 0
+INFO 2025-12-29 21:00:17,302 log 933 124614468445888 "GET /static/vendor/select2/js/select2.min.js HTTP/1.1" 304 0
+INFO 2025-12-29 21:00:17,327 log 933 124614504113856 "GET /admin/jsi18n/ HTTP/1.1" 200 16820
+INFO 2025-12-29 21:00:17,367 log 933 124614504113856 "GET /static/jazzmin/js/change_list.js HTTP/1.1" 304 0
+INFO 2025-12-31 13:58:09,582 autoreload 1265 134905758224512 Watching for file changes with StatReloader
+INFO 2025-12-31 13:58:25,196 autoreload 1348 125093140316288 Watching for file changes with StatReloader
+INFO 2025-12-31 13:58:33,252 log 1348 125093080020672 "GET / HTTP/1.1" 200 6436
+INFO 2025-12-31 13:58:34,343 log 1348 125093080020672 "GET /admin/ HTTP/1.1" 302 0
+INFO 2025-12-31 13:58:34,358 log 1348 125093080020672 "GET /admin/login/?next=/admin/ HTTP/1.1" 200 3160
+INFO 2025-12-31 13:58:34,462 log 1348 125092976641728 "GET /static/vendor/adminlte/img/AdminLTELogo.png HTTP/1.1" 200 2637
+INFO 2025-12-31 13:58:34,466 log 1348 125092993427136 "GET /static/jazzmin/css/main.css HTTP/1.1" 200 16969
+INFO 2025-12-31 13:58:34,469 log 1348 125092968249024 "GET /static/vendor/bootstrap/js/bootstrap.min.js HTTP/1.1" 200 62440
+INFO 2025-12-31 13:58:34,472 log 1348 125092976641728 "GET /static/vendor/adminlte/js/adminlte.min.js HTTP/1.1" 200 44244
+INFO 2025-12-31 13:58:34,472 log 1348 125093080020672 "GET /static/vendor/fontawesome-free/css/all.min.css HTTP/1.1" 200 103009
+INFO 2025-12-31 13:58:34,488 log 1348 125092985034432 "GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 200 285314
+INFO 2025-12-31 13:58:34,506 log 1348 125093002868416 "GET /static/vendor/adminlte/css/adminlte.min.css HTTP/1.1" 200 1382975
+INFO 2025-12-31 13:58:34,627 log 1348 125093002868416 "GET /static/vendor/fontawesome-free/webfonts/fa-solid-900.woff2 HTTP/1.1" 200 156400
+INFO 2025-12-31 13:58:38,213 log 1348 125093002868416 "POST /admin/login/?next=/admin/ HTTP/1.1" 302 0
+INFO 2025-12-31 13:58:38,262 log 1348 125093002868416 "GET /admin/ HTTP/1.1" 200 45505
+INFO 2025-12-31 13:58:38,331 log 1348 125093002868416 "GET /static/jazzmin/js/main.js HTTP/1.1" 200 2391
+INFO 2025-12-31 13:58:38,361 log 1348 125092976641728 "GET /static/vendor/fontawesome-free/webfonts/fa-regular-400.woff2 HTTP/1.1" 200 25392
+INFO 2025-12-31 13:58:42,361 log 1348 125093002868416 "GET /admin/sales/saleitem/ HTTP/1.1" 200 35653
+INFO 2025-12-31 13:58:42,393 log 1348 125093080020672 "GET /static/admin/js/jquery.init.js HTTP/1.1" 200 347
+INFO 2025-12-31 13:58:42,397 log 1348 125093002868416 "GET /static/vendor/select2/css/select2.min.css HTTP/1.1" 200 16264
+INFO 2025-12-31 13:58:42,397 log 1348 125092985034432 "GET /static/admin/js/core.js HTTP/1.1" 200 6208
+INFO 2025-12-31 13:58:42,397 log 1348 125092993427136 "GET /static/admin/js/actions.js HTTP/1.1" 200 8076
+INFO 2025-12-31 13:58:42,398 log 1348 125092968249024 "GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 200 9777
+INFO 2025-12-31 13:58:42,403 log 1348 125093080020672 "GET /static/admin/js/urlify.js HTTP/1.1" 200 7887
+INFO 2025-12-31 13:58:42,406 log 1348 125092985034432 "GET /static/admin/js/prepopulate.js HTTP/1.1" 200 1531
+INFO 2025-12-31 13:58:42,408 log 1348 125092968249024 "GET /static/vendor/select2/js/select2.min.js HTTP/1.1" 200 73170
+INFO 2025-12-31 13:58:42,411 log 1348 125092993427136 "GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 200 325171
+INFO 2025-12-31 13:58:42,438 log 1348 125092976641728 "GET /admin/jsi18n/ HTTP/1.1" 200 16820
+INFO 2025-12-31 13:58:42,471 log 1348 125093080020672 "GET /static/jazzmin/js/change_list.js HTTP/1.1" 200 2252
+INFO 2025-12-31 13:58:44,814 log 1348 125093080020672 "GET /admin/sales/saleitem/add/ HTTP/1.1" 200 39178
+INFO 2025-12-31 13:58:44,833 log 1348 125093080020672 "GET /static/admin/img/icon-changelink.svg HTTP/1.1" 200 978
+INFO 2025-12-31 13:58:44,834 log 1348 125092976641728 "GET /static/admin/js/prepopulate_init.js HTTP/1.1" 200 586
+INFO 2025-12-31 13:58:44,834 log 1348 125093002868416 "GET /static/admin/js/change_form.js HTTP/1.1" 200 606
+INFO 2025-12-31 13:58:44,838 log 1348 125093002868416 "GET /static/jazzmin/js/change_form.js HTTP/1.1" 200 6052
+INFO 2025-12-31 13:58:44,850 log 1348 125092985034432 "GET /admin/jsi18n/ HTTP/1.1" 200 16820
+INFO 2025-12-31 13:58:44,863 log 1348 125092985034432 "GET /static/admin/img/icon-addlink.svg HTTP/1.1" 200 593
+INFO 2025-12-31 13:58:44,863 log 1348 125092976641728 "GET /static/admin/img/icon-viewlink.svg HTTP/1.1" 200 928
+INFO 2025-12-31 13:58:44,863 log 1348 125092993427136 "GET /static/admin/img/icon-deletelink.svg HTTP/1.1" 200 689
+INFO 2025-12-31 13:58:50,672 log 1348 125092985034432 "GET /admin/sales/saleitem/ HTTP/1.1" 200 35653
+INFO 2025-12-31 13:59:11,265 log 1348 125092985034432 "GET / HTTP/1.1" 200 6436
+WARNING 2025-12-31 13:59:11,578 log 1348 125092985034432 Not Found: /favicon.ico
+WARNING 2025-12-31 13:59:11,578 log 1348 125092985034432 "GET /favicon.ico HTTP/1.1" 404 2907
+INFO 2025-12-31 14:00:44,265 autoreload 1348 125093140316288 /home/aman/noa_beuty/sales/views.py changed, reloading.
+INFO 2025-12-31 14:00:44,684 autoreload 1683 134280010506368 Watching for file changes with StatReloader
+INFO 2025-12-31 14:00:50,814 autoreload 1683 134280010506368 /home/aman/noa_beuty/sales/urls.py changed, reloading.
+INFO 2025-12-31 14:00:51,118 autoreload 1719 140018237186176 Watching for file changes with StatReloader
+INFO 2025-12-31 14:01:06,450 autoreload 1719 140018237186176 /home/aman/noa_beuty/sales/views.py changed, reloading.
+INFO 2025-12-31 14:01:06,694 autoreload 1782 136976780419200 Watching for file changes with StatReloader
+INFO 2025-12-31 14:01:23,854 autoreload 1782 136976780419200 /home/aman/noa_beuty/sales/urls.py changed, reloading.
+INFO 2025-12-31 14:01:24,138 autoreload 1850 134114608742528 Watching for file changes with StatReloader
+INFO 2025-12-31 14:01:39,477 autoreload 1850 134114608742528 /home/aman/noa_beuty/sales/views.py changed, reloading.
+INFO 2025-12-31 14:01:39,738 autoreload 1897 133748460265600 Watching for file changes with StatReloader
+INFO 2025-12-31 14:02:17,210 autoreload 1897 133748460265600 /home/aman/noa_beuty/sales/views.py changed, reloading.
+INFO 2025-12-31 14:02:17,502 autoreload 1948 124005545869440 Watching for file changes with StatReloader
+INFO 2025-12-31 14:03:13,767 autoreload 2035 134328662655104 Watching for file changes with StatReloader
+INFO 2025-12-31 14:04:06,530 autoreload 2035 134328662655104 /home/aman/noa_beuty/sales/urls.py changed, reloading.
+INFO 2025-12-31 14:04:07,051 autoreload 2142 129533864341632 Watching for file changes with StatReloader
+INFO 2025-12-31 14:04:08,277 autoreload 2142 129533864341632 /home/aman/noa_beuty/sales/views.py changed, reloading.
+INFO 2025-12-31 14:04:08,561 autoreload 2158 136209761575040 Watching for file changes with StatReloader
+INFO 2025-12-31 14:04:09,724 autoreload 2158 136209761575040 /home/aman/noa_beuty/sales/views.py changed, reloading.
+INFO 2025-12-31 14:04:09,981 autoreload 2166 136010285301888 Watching for file changes with StatReloader
+INFO 2025-12-31 14:04:11,599 log 2166 136010224973504 "GET / HTTP/1.1" 200 6436
+INFO 2025-12-31 14:04:11,954 log 2166 136010224973504 "GET / HTTP/1.1" 200 6436
+INFO 2025-12-31 14:04:12,164 log 2166 136010224973504 "GET / HTTP/1.1" 200 6436
+WARNING 2025-12-31 14:04:20,038 log 2166 136010224973504 Not Found: /adm/
+WARNING 2025-12-31 14:04:20,038 log 2166 136010224973504 "GET /adm/ HTTP/1.1" 404 2886
+WARNING 2025-12-31 14:04:28,692 log 2166 136010224973504 Not Found: /sales/
+WARNING 2025-12-31 14:04:28,692 log 2166 136010224973504 "GET /sales/ HTTP/1.1" 404 4635
+INFO 2025-12-31 14:04:39,556 log 2166 136010224973504 "GET /sales/positions/ HTTP/1.1" 200 4780
+INFO 2025-12-31 14:06:45,206 log 2166 136010224973504 "GET / HTTP/1.1" 200 7215
+INFO 2025-12-31 14:06:46,441 log 2166 136010224973504 "GET / HTTP/1.1" 200 7215
+INFO 2025-12-31 14:06:47,441 log 2166 136010224973504 "GET /sales/positions/ HTTP/1.1" 200 12500

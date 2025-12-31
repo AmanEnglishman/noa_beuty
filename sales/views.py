@@ -257,3 +257,7 @@ from .services.receipt_printer import render_sale_receipt_png
 def receipt_png(request, sale_id):
     png = render_sale_receipt_png(sale_id)
     return HttpResponse(png, content_type="image/png")
+
+def saleitem_list(request):
+    saleitems = SaleItem.objects.select_related('sale', 'perfume', 'cosmetic', 'bottle_type').order_by('-id')
+    return render(request, 'sales/saleitem_list.html', { 'saleitems': saleitems })
