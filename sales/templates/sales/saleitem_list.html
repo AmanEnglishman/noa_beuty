@@ -16,6 +16,7 @@
                 <thead>
                 <tr>
                     <th scope="col">ID</th>
+                    <th scope="col">Дата</th>
                     <th scope="col">Чек</th>
                     <th scope="col">Тип</th>
                     <th scope="col">Товар</th>
@@ -31,6 +32,7 @@
                 {% for item in saleitems %}
                 <tr>
                     <td>{{ item.id }}</td>
+                    <td>{{ item.sale.sale_date|date:"d.m.Y H:i" }}</td>
                     <td class="text-primary"><a href="/sales/today/#sale-{{ item.sale.id }}">#{{ item.sale.id }}</a></td>
                     <td>{{ item.get_sale_type_display }}</td>
                     <td>
@@ -45,7 +47,7 @@
                     <td>{% if item.discount_percent %}{{ item.discount_percent }}{% else %}0{% endif %}</td>
                 </tr>
                 {% empty %}
-                <tr><td colspan="10" class="text-center text-muted">Позиции чеков отсутствуют</td></tr>
+                <tr><td colspan="11" class="text-center text-muted">Позиции чеков отсутствуют</td></tr>
                 {% endfor %}
                 </tbody>
             </table>
