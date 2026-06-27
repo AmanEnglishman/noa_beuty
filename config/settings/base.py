@@ -47,7 +47,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'config.urls'
 
-ADMIN_GATE_PASSWORD = config('ADMIN_GATE_PASSWORD', default='admin')
+ADMIN_GATE_PASSWORD = config('ADMIN_GATE_PASSWORD', default='adminnn')
 ADMIN_GATE_GRACE_SECONDS = config('ADMIN_GATE_GRACE_SECONDS', default=10, cast=int)
 
 TEMPLATES = [
